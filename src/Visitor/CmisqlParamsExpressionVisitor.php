@@ -11,6 +11,7 @@ namespace Tms\Rql\Visitor;
 
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InTreeNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NclNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\EqAnyNode;
@@ -53,6 +54,11 @@ class CmisqlParamsExpressionVisitor extends SqlParamsExpressionVisitor
             case $node instanceof NceNode:
                 return [
                     '-?', $this->encodeContainsValue($node->getValue()),
+                ];
+            case $node instanceof InTreeNode:
+                return [
+                    'IN_TREE(?)',
+                    $this->encodeValue($node->getValue())
                 ];
             default:
                 return parent::__invoke($node);

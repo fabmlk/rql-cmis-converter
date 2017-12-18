@@ -7,7 +7,7 @@ require 'rql-complex.php';
 $builder = $factory->getBuilder(CmisqlFactory::TYPE_PARAMS);
 
 $builder->onVisitExpression(new class() implements \Tms\Rql\Builder\VisitExpressionListenerInterface {
-    public function update(\Xiag\Rql\Parser\AbstractNode $node): void {
+    public function update(\Xiag\Rql\Parser\AbstractNode &$node): void {
         if (method_exists($node, 'getField')) {
             echo $node->getField() . PHP_EOL;
         }

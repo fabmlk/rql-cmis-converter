@@ -81,6 +81,7 @@ class CmisqlParser extends BaseParser
             ->addNodeParser(new ComparisonOperator\Fiql\GeNodeParser($fieldParser, $scalarParser))
             ->addNodeParser(new ComparisonOperator\Fiql\LikeNodeParser($fieldParser, $globParser))
             ->addNodeParser($containsParser)
+            ->addNodeParser(new ExtensionFunctionOperator\Cmisql\InTreeNodeParser($scalarParser))
             ->addNodeParser(new ExtensionComparisonOperator\BetweenNodeParser($scalarParser))
             ->addNodeParser(new ExtensionComparisonOperator\Cmisql\EqNodeParser($fieldAggregateParser, $scalarParser))
             ->addNodeParser(new ExtensionComparisonOperator\Cmisql\InNodeParser($fieldAggregateParser, $arrayParser))
