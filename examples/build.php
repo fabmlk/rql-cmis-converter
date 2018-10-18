@@ -2,20 +2,43 @@
 
 use Tms\Rql\Factory\CmisqlFactory;
 
-require 'rql-complex.php';
+function showoff($rql, $tree) {
+    global $factory;
 
-$builder = $factory->getBuilder(CmisqlFactory::TYPE_PARAMS);
+    echo 'RQL:' . PHP_EOL
+        . '----' . PHP_EOL
+        . $rql . PHP_EOL;
+    echo PHP_EOL;
 
-$builder->onVisitExpression(new class() implements \Tms\Rql\Builder\VisitExpressionListenerInterface {
-    public function update(\Xiag\Rql\Parser\AbstractNode &$node): void {
-        if (method_exists($node, 'getField')) {
-            echo $node->getField() . PHP_EOL;
+    $builder = $factory->getBuilder(CmisqlFactory::TYPE_PARAMS);
+
+
+    echo 'VISIT:' . PHP_EOL
+        . '------' . PHP_EOL;
+    $builder->onVisitExpression(new class() implements \Tms\Rql\Builder\VisitExpressionListenerInterface {
+        public function update(\Xiag\Rql\Parser\AbstractNode &$node): void {
+            if (method_exists($node, 'getField')) {
+                echo "Visiting field: " . $node->getField() . PHP_EOL;
+            }
         }
-    }
-});
+    });
 
-$query = $builder->build($tree, 'cmis:document');
-echo $query->sql();
-echo SqlFormatter::format($query->sql());
-var_dump($query->params());
+    $query = $builder->build($tree, 'cmis:document');
+    echo PHP_EOL;
+    echo 'SQL:' . PHP_EOL
+        . '----' . PHP_EOL
+        . SqlFormatter::format($query->sql()) . PHP_EOL;
+    echo PHP_EOL;
 
+    echo 'PARAMS:' . PHP_EOL
+        . '-------' . PHP_EOL;
+    var_dump($query->params());
+    echo PHP_EOL;
+}
+
+
+require 'rql-complex.php';
+showoff($rql, $tree);
+
+require 'rql-multiple-select.php';
+showoff($rql, $tree);
