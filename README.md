@@ -125,7 +125,7 @@ function encodeString(value) {
 
   
 ## Opérateurs  
- - opérateurs scalaires
+- opérateurs scalaires
  
     RQL | CMIS QL | Abréviation de | Typage
     ---|---|---|---
@@ -139,7 +139,6 @@ function encodeString(value) {
     between(a,b,c) | a BETWEEN b AND c | | (string, scalaire, scalaire)
     eq(any(a),b) | b = ANY a | | (string, scalaire)
     
-
 - opérateurs scalaires pour CONTAINS()
 
     RQL | CMIS QL | Abréviation de | Typage
@@ -149,7 +148,7 @@ function encodeString(value) {
     contains(col(a)) | CONTAINS('a') | <u>CO</u>ntains <u>L</u>ike | glob
     contains(ncl(a)) | CONTAINS('-a') | <u>N</u>ot <u>C</u>ontains <u>L</u>ike | glob
     
- - opérateurs de tableaux
+- opérateurs de tableaux
  
      RQL | CMIS QL | Typage
     ---|---|---
@@ -158,20 +157,19 @@ function encodeString(value) {
     out(a,(b,c)) | a NOT IN (b, c) | (string, array)
     out(any(a),(b,c)) | ANY a NOT IN (b, c) | (string, array)
     
- - opérateurs logiques
+- opérateurs logiques
  
       RQL | CMIS QL
     ---|---|---
     and(eq(a,b),ne(c,d)) | (a = b AND c <> d)
     or(eq(a,b),ne(c,d)) | (a = b OR c <> d)
     eq(a,b)&ne(b,c) | (a = b AND b <> d)
-    (eq(a,b)\|ne(b,c)) | (a = b OR c <> d)
+    (eq(a,b)&#124;ne(b,c)) | (a = b OR c <> d)
     not(eq(a,b)) | NOT (a = b)
     
     **Remarque:**
     - l'opérateur logique `|` peut uniquement se situer à l'intérieur d'un groupe. Ceci est exprimé ci-dessus par la présence des `()`. En effet, comme RQL doit être compatible avec les règles d'un query string d'URI, seule l'opérateur logique `&` est toléré en "top-level".
-<br/>
-<br/>
+
 - opérateurs de fonctions
 
     RQL | CMIS QL | Typage
