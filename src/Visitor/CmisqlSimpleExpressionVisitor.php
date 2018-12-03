@@ -11,12 +11,13 @@ namespace Tms\Rql\Visitor;
 
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InFolderNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InTreeNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NclNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\InAnyNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\OutAnyNode;
-use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\EqAnyNode;
+use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\EqAnyNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 
@@ -56,6 +57,10 @@ class CmisqlSimpleExpressionVisitor extends SqlSimpleExpressionVisitor
             case $node instanceof InTreeNode:
                 return [
                     sprintf('IN_TREE(%s)', $this->encodeValue($node->getValue()))
+                ];
+            case $node instanceof InFolderNode:
+                return [
+                    sprintf('IN_FOLDER(%s)', $this->encodeValue($node->getValue()))
                 ];
             default:
                 return parent::__invoke($node);
