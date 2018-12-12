@@ -113,7 +113,8 @@ class SqlSimpleExpressionVisitor
             return var_export($value, true);
         }
         if ($value instanceof Glob) {
-            return var_export($value->toLike(), true);
+            // Do not use var_export here or eventual backslashes will be doubled
+            return sprintf("'%s'", $value->toLike());
         }
         if ($value instanceof \DateTimeInterface) {
             return $value->format('Y-m-d H:i:s');
