@@ -53,7 +53,8 @@ class CmisqlParser extends BaseParser
             ->addNodeParser(new ExtensionFunctionOperator\Cmisql\NceNodeParser($globParser))
             // accept globs or strings
             ->addNodeParser(new ExtensionFunctionOperator\Cmisql\ColNodeParser($globParser))
-            ->addNodeParser(new ExtensionFunctionOperator\Cmisql\NclNodeParser($globParser));
+            ->addNodeParser(new ExtensionFunctionOperator\Cmisql\NclNodeParser($globParser))
+            ->addNodeParser(new ExtensionComparisonOperator\Cmisql\AftsNodeParser($fieldParser, $globParser));
 
         $containsParser = new ExtensionFunctionOperator\Cmisql\ContainsNodeParser(
             new NodeParser\Query\GroupNodeParser($containsQueryNodeParser)

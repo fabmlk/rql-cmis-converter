@@ -154,6 +154,8 @@ class SqlConditionsBuilder implements ConditionsBuilderInterface
      */
     protected function visit(AbstractQueryNode $node, ?string $group): void
     {
+        $this->notify($node); // first, notify the listeners
+        
         if ($node instanceof AndNode) {
             $this->applyLogicalGroup($group, 'andGroup');
         } elseif ($node instanceof OrNode) {
@@ -167,7 +169,6 @@ class SqlConditionsBuilder implements ConditionsBuilderInterface
             // in that case we can pick any group we want (andGroup here) as its logical operator
             // name will be stripped off anyway when converting to sql
 
-            $this->notify($node); // first, notify the listeners
             $this->applyExpression($group ?: 'andGroup', ($this->expressionVisitor)($node));
         }
     }

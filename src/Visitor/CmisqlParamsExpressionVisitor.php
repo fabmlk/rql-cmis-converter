@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Tms\Rql\Visitor;
 
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InFolderNode;
@@ -56,6 +57,11 @@ class CmisqlParamsExpressionVisitor extends SqlParamsExpressionVisitor
             case $node instanceof NceNode:
                 return [
                     '-?', $this->encodeContainsValue($node->getValue()),
+                ];
+            case $node instanceof AftsNode:
+                return [
+                    sprintf('%s:?', $node->getField()),
+                    sprintf('"%s"', $node->getValue())
                 ];
             case $node instanceof InTreeNode:
                 return [

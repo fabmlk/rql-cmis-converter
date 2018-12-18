@@ -15,6 +15,7 @@ namespace Tms\Rql\ParserExtension\NodeParser\Query\FunctionOperator\Cmisql;
 
 use Tms\Rql\ParserExtension\Node\Query\Cmisql\AndContainsNode;
 use Tms\Rql\ParserExtension\Node\Query\Cmisql\OrContainsNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
@@ -68,6 +69,7 @@ class ContainsNodeParser implements NodeParserInterface
             case $node instanceof NceNode:
             case $node instanceof ColNode:
             case $node instanceof NclNode:
+            case $node instanceof AftsNode:
                 // We could return OrContainsNode as well, this will just act as a wrapper
                 return new AndContainsNode([$node]);
             default:
@@ -84,6 +86,7 @@ class ContainsNodeParser implements NodeParserInterface
                                 NceNode::class,
                                 ColNode::class,
                                 NclNode::class,
+                                AftsNode::class,
                             ]
                         )
                     )
