@@ -7,10 +7,10 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Visitor;
+namespace Tms\Rql\Cmis\Visitor;
 
 use Latitude\QueryBuilder\ValueList as in;
-use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
+use Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractComparisonOperatorNode;

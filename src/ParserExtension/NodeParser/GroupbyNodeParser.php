@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ParserExtension\NodeParser;
+namespace Tms\Rql\Cmis\ParserExtension\NodeParser;
 
-use Tms\Rql\ParserExtension\Node\GroupbyNode;
+use Tms\Rql\Cmis\ParserExtension\Node\GroupbyNode;
 use Xiag\Rql\Parser\NodeParserInterface;
 use Xiag\Rql\Parser\Token;
 use Xiag\Rql\Parser\TokenStream;

@@ -6,11 +6,11 @@
  * veuillez vous référer au fichier LICENSE distribué avec ce code source.
  */
 
-namespace Tms\Rql\ParserExtension;
+namespace Tms\Rql\Cmis\ParserExtension;
 
-use Tms\Rql\ParserExtension\NodeParser as ExtensionNodeParser;
-use Tms\Rql\ParserExtension\NodeParser\Query\ComparisonOperator as ExtensionComparisonOperator;
-use Tms\Rql\ParserExtension\ValueParser as ExtensionValueParser;
+use Tms\Rql\Cmis\ParserExtension\NodeParser as ExtensionNodeParser;
+use Tms\Rql\Cmis\ParserExtension\NodeParser\Query\ComparisonOperator as ExtensionComparisonOperator;
+use Tms\Rql\Cmis\ParserExtension\ValueParser as ExtensionValueParser;
 use Xiag\Rql\Parser\NodeParser;
 use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator;
 use Xiag\Rql\Parser\NodeParser\Query\LogicalOperator;

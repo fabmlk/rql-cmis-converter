@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Builder;
+namespace Tms\Rql\Cmis\Builder;
 
-use Tms\Rql\ConditionsExtension\AbstractEnhanceableConditions;
+use Tms\Rql\Cmis\ConditionsExtension\AbstractEnhanceableConditions;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 
 /**

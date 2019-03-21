@@ -7,16 +7,16 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Factory;
+namespace Tms\Rql\Cmis\Factory;
 
-use Tms\Rql\Builder\CmisqlConditionsBuilder;
-use Tms\Rql\Builder\CmisqlQueryBuilder;
-use Tms\Rql\Builder\ConditionsBuilderInterface;
-use Tms\Rql\Builder\QueryBuilderInterface;
-use Tms\Rql\ConditionsExtension\CmisqlContainsConditions;
-use Tms\Rql\ParserExtension\CmisqlParser;
-use Tms\Rql\Visitor\CmisqlParamsExpressionVisitor;
-use Tms\Rql\Visitor\CmisqlSimpleExpressionVisitor;
+use Tms\Rql\Cmis\Builder\CmisqlConditionsBuilder;
+use Tms\Rql\Cmis\Builder\CmisqlQueryBuilder;
+use Tms\Rql\Cmis\Builder\ConditionsBuilderInterface;
+use Tms\Rql\Cmis\Builder\QueryBuilderInterface;
+use Tms\Rql\Cmis\ConditionsExtension\CmisqlContainsConditions;
+use Tms\Rql\Cmis\ParserExtension\CmisqlParser;
+use Tms\Rql\Cmis\Visitor\CmisqlParamsExpressionVisitor;
+use Tms\Rql\Cmis\Visitor\CmisqlSimpleExpressionVisitor;
 use Xiag\Rql\Parser\Parser;
 
 /**

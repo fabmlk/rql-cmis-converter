@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ParserExtension\Node\Query\Cmisql;
+namespace Tms\Rql\Cmis\ParserExtension\Node\Query\Cmisql;
 
 use Xiag\Rql\Parser\Node\Query\AbstractLogicalOperatorNode;
 

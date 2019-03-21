@@ -27,7 +27,7 @@ require 'vendor/autoload.php';
 // default lexer supports all RQL rules
 $lexer = new Xiag\Rql\Parser\Lexer();
 
-$factory = new Tms\Rql\Factory\CmisqlFactory();
+$factory = new Tms\Rql\Cmis\Factory\CmisqlFactory();
 $parser = $factory->getParser();
 
 // RQL code
@@ -39,7 +39,7 @@ $tokens = $lexer->tokenize($rql);
 $tree = $parser->parse($tokens);
 
 // generate CMIS QL
-$builder = $factory->getBuilder(Tms\Rql\Factory\CmisqlFactory::TYPE_PARAMS);
+$builder = $factory->getBuilder(Tms\Rql\Cmis\Factory\CmisqlFactory::TYPE_PARAMS);
 $query = $builder->build($tree, 'cmis:document');
 echo $query->sql() . PHP_EOL;
 var_dump($query->params());

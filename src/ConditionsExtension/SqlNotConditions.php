@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ConditionsExtension;
+namespace Tms\Rql\Cmis\ConditionsExtension;
 
 /**
  * Class EnhanceableConditions.

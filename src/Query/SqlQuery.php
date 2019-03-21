@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Query;
+namespace Tms\Rql\Cmis\Query;
 
 use Latitude\QueryBuilder\SelectQuery;
 

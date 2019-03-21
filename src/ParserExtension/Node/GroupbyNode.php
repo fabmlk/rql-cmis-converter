@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ParserExtension\Node;
+namespace Tms\Rql\Cmis\ParserExtension\Node;
 
 use Xiag\Rql\Parser\AbstractNode;
 

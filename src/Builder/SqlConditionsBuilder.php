@@ -7,10 +7,10 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Builder;
+namespace Tms\Rql\Cmis\Builder;
 
-use Tms\Rql\ConditionsExtension\AbstractEnhanceableConditions;
-use Tms\Rql\Visitor\SqlSimpleExpressionVisitor;
+use Tms\Rql\Cmis\ConditionsExtension\AbstractEnhanceableConditions;
+use Tms\Rql\Cmis\Visitor\SqlSimpleExpressionVisitor;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicalOperatorNode;
 use Xiag\Rql\Parser\Node\Query\LogicalOperator\AndNode;

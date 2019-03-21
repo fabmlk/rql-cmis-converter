@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql;
+namespace Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator\Cmisql;
 
 use Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode;
 

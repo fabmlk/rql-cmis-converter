@@ -7,10 +7,10 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ParserExtension\NodeParser\Query\ComparisonOperator\Cmisql;
+namespace Tms\Rql\Cmis\ParserExtension\NodeParser\Query\ComparisonOperator\Cmisql;
 
-use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
-use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\InAnyNode;
+use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
+use Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator\Cmisql\InAnyNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\ArrayOperator\InNode;
 use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\AbstractComparisonRqlNodeParser;

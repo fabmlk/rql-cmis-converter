@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Factory;
+namespace Tms\Rql\Cmis\Factory;
 
-use Tms\Rql\Builder\ConditionsBuilderInterface;
+use Tms\Rql\Cmis\Builder\ConditionsBuilderInterface;
 use Xiag\Rql\Parser\Parser;
 
 /**

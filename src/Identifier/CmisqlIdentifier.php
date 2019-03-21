@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Identifier;
+namespace Tms\Rql\Cmis\Identifier;
 
 use Latitude\QueryBuilder\Identifier;
 use Latitude\QueryBuilder\IdentifierException;

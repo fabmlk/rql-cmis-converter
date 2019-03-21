@@ -5,7 +5,7 @@ require 'init.php';
 // default lexer supports all RQL rules
 $lexer = new Xiag\Rql\Parser\Lexer();
 
-$factory = new \Tms\Rql\Factory\CmisqlFactory();
+$factory = new \Tms\Rql\Cmis\Factory\CmisqlFactory();
 $parser = $factory->getParser();
 
 // RQL code: only the last select should be kept

@@ -1,6 +1,6 @@
 <?php
 
-use Tms\Rql\Factory\CmisqlFactory;
+use Tms\Rql\Cmis\Factory\CmisqlFactory;
 
 function showoff($rql, $tree) {
     global $factory;
@@ -10,12 +10,12 @@ function showoff($rql, $tree) {
         . $rql . PHP_EOL;
     echo PHP_EOL;
 
-    $builder = $factory->getBuilder(CmisqlFactory::TYPE_PARAMS);
+    $builder = $factory->getBuilder(CmisqlFactory::TYPE_SIMPLE);
 
 
     echo 'VISIT:' . PHP_EOL
         . '------' . PHP_EOL;
-    $builder->onVisitExpression(new class() implements \Tms\Rql\Builder\VisitExpressionListenerInterface {
+    $builder->onVisitExpression(new class() implements \Tms\Rql\Cmis\Builder\VisitExpressionListenerInterface {
         public function update(\Xiag\Rql\Parser\AbstractNode &$node): void {
             if (method_exists($node, 'getField')) {
                 echo "Visiting field: " . $node->getField() . PHP_EOL;

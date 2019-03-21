@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ParserExtension\ValueParser;
+namespace Tms\Rql\Cmis\ParserExtension\ValueParser;
 
-use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
+use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
 use Xiag\Rql\Parser\SubParserInterface;
 use Xiag\Rql\Parser\Token;
 use Xiag\Rql\Parser\TokenStream;

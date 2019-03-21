@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\ParserExtension\Node\Query\ScalarOperator;
+namespace Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator;
 
 use Xiag\Rql\Parser\Node\Query\AbstractComparisonOperatorNode;
 

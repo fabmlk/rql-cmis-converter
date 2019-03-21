@@ -7,14 +7,14 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Builder;
+namespace Tms\Rql\Cmis\Builder;
 
 use Latitude\QueryBuilder\Expression as e;
 use Latitude\QueryBuilder\SelectQuery;
-use Tms\Rql\ParserExtension\Node\GroupbyNode;
-use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
-use Tms\Rql\Query\QueryInterface;
-use Tms\Rql\Query\SqlQuery;
+use Tms\Rql\Cmis\ParserExtension\Node\GroupbyNode;
+use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
+use Tms\Rql\Cmis\Query\QueryInterface;
+use Tms\Rql\Cmis\Query\SqlQuery;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\LimitNode;
 use Xiag\Rql\Parser\Node\SelectNode;

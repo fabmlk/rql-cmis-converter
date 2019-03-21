@@ -7,10 +7,10 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Builder;
+namespace Tms\Rql\Cmis\Builder;
 
-use Tms\Rql\Query\CmisqlQuery;
-use Tms\Rql\Query\QueryInterface;
+use Tms\Rql\Cmis\Query\CmisqlQuery;
+use Tms\Rql\Cmis\Query\QueryInterface;
 
 /**
  * Class CmisqlQueryBuilder.
