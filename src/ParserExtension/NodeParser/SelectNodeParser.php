@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension\NodeParser;
+namespace Tms\Rql\ParserExtension\NodeParser;
 
 use Xiag\Rql\Parser\Node\SelectNode;
 use Xiag\Rql\Parser\NodeParserInterface;

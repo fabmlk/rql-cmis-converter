@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\Builder;
+namespace Tms\Rql\Builder;
 
-use Tms\Rql\Cmis\Query\QueryInterface;
+use Tms\Rql\Query\QueryInterface;
 use Xiag\Rql\Parser\Query as RqlQuery;
 
 /**

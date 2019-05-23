@@ -7,18 +7,18 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\Visitor;
+namespace Tms\Rql\Visitor;
 
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\InFolderNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\InTreeNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\NclNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator\Cmisql\InAnyNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator\Cmisql\OutAnyNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator\Cmisql\EqAnyNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InFolderNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InTreeNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NclNode;
+use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\InAnyNode;
+use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\OutAnyNode;
+use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\EqAnyNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 

@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension\NodeParser\Query\ComparisonOperator\Cmisql;
+namespace Tms\Rql\ParserExtension\NodeParser\Query\ComparisonOperator\Cmisql;
 
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
 use Xiag\Rql\Parser\NodeParser\Query\ComparisonOperator\AbstractComparisonRqlNodeParser;
 
 /**

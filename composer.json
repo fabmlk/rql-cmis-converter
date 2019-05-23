@@ -1,6 +1,6 @@
 {
-    "name": "ged/rql-cmis-converter",
-    "description": "RQL converted for CMIS Query Language",
+    "name": "ged/rql-converter",
+    "description": "RQL converted for SQL, CMIS QL et DQL",
     "authors": [
         {
             "name": "Fabien Lanoux",
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Tms\\Rql\\Cmis\\": "src/"
+            "Tms\\Rql\\": "src/"
         }
     }
 }

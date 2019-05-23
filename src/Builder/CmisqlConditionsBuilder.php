@@ -7,11 +7,11 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\Builder;
+namespace Tms\Rql\Builder;
 
-use Tms\Rql\Cmis\ParserExtension\Node\Query\Cmisql\AndContainsNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\Cmisql\OrContainsNode;
-use Tms\Rql\Cmis\Visitor\CmisqlSimpleExpressionVisitor;
+use Tms\Rql\ParserExtension\Node\Query\Cmisql\AndContainsNode;
+use Tms\Rql\ParserExtension\Node\Query\Cmisql\OrContainsNode;
+use Tms\Rql\Visitor\CmisqlSimpleExpressionVisitor;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 
 /**

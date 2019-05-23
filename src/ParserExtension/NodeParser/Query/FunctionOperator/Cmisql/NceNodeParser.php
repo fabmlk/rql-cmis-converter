@@ -7,10 +7,10 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension\NodeParser\Query\FunctionOperator\Cmisql;
+namespace Tms\Rql\ParserExtension\NodeParser\Query\FunctionOperator\Cmisql;
 
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
-use Tms\Rql\Cmis\ParserExtension\NodeParser\Query\FunctionOperator\AbstractUnaryNodeParser;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
+use Tms\Rql\ParserExtension\NodeParser\Query\FunctionOperator\AbstractUnaryNodeParser;
 use Xiag\Rql\Parser\AbstractNode;
 
 /**

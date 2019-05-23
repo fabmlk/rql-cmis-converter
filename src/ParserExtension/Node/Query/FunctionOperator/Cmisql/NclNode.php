@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql;
+namespace Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql;
 
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\AbstractUnaryNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AbstractUnaryNode;
 
 /**
  * Class NclNode.

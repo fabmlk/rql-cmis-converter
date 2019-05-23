@@ -9,20 +9,20 @@ declare(strict_types=1);
 
 namespace Tms\Rql\Factory;
 
-use Tms\Rql\Builder\CmisqlConditionsBuilder;
-use Tms\Rql\Builder\CmisqlQueryBuilder;
 use Tms\Rql\Builder\ConditionsBuilderInterface;
+use Tms\Rql\Builder\DqlConditionsBuilder;
+use Tms\Rql\Builder\DqlQueryBuilder;
 use Tms\Rql\Builder\QueryBuilderInterface;
-use Tms\Rql\ConditionsExtension\CmisqlContainsConditions;
-use Tms\Rql\ParserExtension\CmisqlParser;
-use Tms\Rql\Visitor\CmisqlParamsExpressionVisitor;
-use Tms\Rql\Visitor\CmisqlSimpleExpressionVisitor;
+use Tms\Rql\ConditionsExtension\SqlNotConditions;
+use Tms\Rql\ParserExtension\SqlParser;
+use Tms\Rql\Visitor\DqlParamsExpressionVisitor;
+use Tms\Rql\Visitor\DqlSimpleExpressionVisitor;
 use Xiag\Rql\Parser\Parser;
 
 /**
- * Class CmisqlFactory.
+ * Class DqlFactory.
  */
-class CmisqlFactory implements FactoryInterface
+class DqlFactory implements FactoryInterface
 {
     /**
      * @const string
@@ -35,16 +35,38 @@ class CmisqlFactory implements FactoryInterface
     public const TYPE_SIMPLE = 'simple';
 
     /**
+     * @const string
+     */
+    public const DEFAULT_ROOT_ALIAS = 'o';
+
+    /**
+     * The entity alias involved in the construction of the query
+     *
+     * @var string $rootAlias
+     */
+    private $rootAlias;
+
+    /**
+     * DqlFactory constructor.
+     *
+     * @param string $rootAlias
+     */
+    public function __construct(string $rootAlias = self::DEFAULT_ROOT_ALIAS)
+    {
+       $this->rootAlias = $rootAlias;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getExpressionVisitor(string $type = ''): callable
     {
         switch ($type) {
             case self::TYPE_PARAMS:
-                return new CmisqlParamsExpressionVisitor();
+                return new DqlParamsExpressionVisitor($this->rootAlias);
             case self::TYPE_SIMPLE:
             case '':
-                return new CmisqlSimpleExpressionVisitor();
+                return new DqlSimpleExpressionVisitor($this->rootAlias);
             default:
                 throw new \InvalidArgumentException(sprintf('Unkown visitor type %s', $type));
         }
@@ -55,7 +77,7 @@ class CmisqlFactory implements FactoryInterface
      */
     public function getParser(): Parser
     {
-        return new CmisqlParser();
+        return new SqlParser();
     }
 
     /**
@@ -63,9 +85,9 @@ class CmisqlFactory implements FactoryInterface
      */
     public function getConditionsBuilder(string $type = ''): ConditionsBuilderInterface
     {
-        $enhancedConditions = CmisqlContainsConditions::make();
+        $enhancedConditions = SqlNotConditions::make();
 
-        return new CmisqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));
+        return new DqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));
     }
 
     /**
@@ -73,6 +95,6 @@ class CmisqlFactory implements FactoryInterface
      */
     public function getBuilder(string $visitorType = ''): QueryBuilderInterface
     {
-        return new CmisqlQueryBuilder($this->getConditionsBuilder($visitorType));
+        return new DqlQueryBuilder($this->getConditionsBuilder($visitorType), $this->rootAlias);
     }
 }

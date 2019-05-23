@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension\NodeParser\Query\ComparisonOperator;
+namespace Tms\Rql\ParserExtension\NodeParser\Query\ComparisonOperator;
 
-use Tms\Rql\Cmis\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
+use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
 use Xiag\Rql\Parser\NodeParserInterface;
 use Xiag\Rql\Parser\SubParserInterface;
 use Xiag\Rql\Parser\Token;

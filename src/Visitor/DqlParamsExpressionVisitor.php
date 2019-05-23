@@ -2,13 +2,14 @@
 /**
  * Ce fichier fait partie du package Tms.
  *
- * Pour les informations complètes de copyright et de licence,
- * veuillez vous référer au fichier LICENSE distribué avec ce code source.
+ *  Pour les informations complètes de copyright et de licence,
+ *  veuillez vous référer au fichier LICENSE distribué avec ce code source.
  */
 declare(strict_types=1);
 
 namespace Tms\Rql\Visitor;
 
+use Latitude\QueryBuilder\ValueList as in;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
@@ -24,10 +25,32 @@ use Xiag\Rql\Parser\Node\Query\ScalarOperator\LtNode;
 use Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode;
 
 /**
- * Class SqlSimpleExpressionVisitor.
+ * Class DqlParamsExpressionVisitor.
+ *
+ * https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#ebnf
  */
-class SqlSimpleExpressionVisitor
+class DqlParamsExpressionVisitor
 {
+    /**
+     * @var string
+     */
+    private $rootAlias;
+
+    /**
+     * @var int
+     */
+    private $placeholderInc = 0;
+
+    /**
+     * DqlSimpleExpressionVisitor constructor.
+     *
+     * @param string $rootAlias
+     */
+    public function __construct(string $rootAlias)
+    {
+        $this->rootAlias = $rootAlias;
+    }
+
     /**
      * @param AbstractComparisonOperatorNode $node
      *
@@ -40,46 +63,55 @@ class SqlSimpleExpressionVisitor
         switch (true) {
             case $node instanceof NeNode:
                 return [
-                    sprintf('%s <> %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s <> ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof LtNode:
                 return [
-                    sprintf('%s < %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s < ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof GtNode:
                 return [
-                    sprintf('%s > %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s > ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof GeNode:
                 return [
-                    sprintf('%s >= %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s >= ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof LeNode:
                 return [
-                    sprintf('%s <= %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s <= ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof InNode:
                 return [
-                    sprintf('%s IN %s', $node->getField(), $this->encodeValue($node->getValues())),
+                    sprintf('%s.%s IN ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValues()),
                 ];
             case $node instanceof OutNode:
                 return [
-                    sprintf('%s NOT IN %s', $node->getField(), $this->encodeValue($node->getValues())),
+                    sprintf('%s.%s NOT IN ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValues()),
                 ];
             case $node instanceof LikeNode:
                 return [
-                    sprintf('%s LIKE %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s LIKE ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
+                    $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof BetweenNode:
                 return [
-                    sprintf('%s BETWEEN %s AND %s', $node->getField(), $node->getFrom(), $node->getTo()),
+                    sprintf('%s.%s BETWEEN ?%d AND ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++, $this->placeholderInc++),
                 ];
             case $node instanceof EqNode:
                 $encodedValue = $this->encodeValue($node->getValue());
                 $operator = 'NULL' === $encodedValue ? 'IS' : '=';
 
                 return [
-                    sprintf('%s %s %s', $node->getField(), $operator, $encodedValue),
+                    sprintf('%s.%s %s ?%d', $this->rootAlias, $node->getField(), $operator, $this->placeholderInc++),
+                    $encodedValue
                 ];
             default:
                 throw new \DomainException(sprintf('Unknown node %s', get_class($node)));
@@ -91,14 +123,22 @@ class SqlSimpleExpressionVisitor
      *
      * @param mixed $value
      *
-     * @return string
+     * @return mixed
      *
      * @throws \LogicException if $value is not supported
      */
-    protected function encodeValue($value): string
+    protected function encodeValue($value)
     {
         if (\is_array($value)) {
-            return '('.implode(',', array_map([$this, 'encodeValue'], $value)).')';
+            return in::make(
+                \array_map(
+                    function ($item) {
+                        // for instance: if a DateTime is in the list
+                        return \is_object($item) ? $this->encodeValue($item) : $item;
+                    },
+                    $value
+                )
+            );
         }
         if (\is_bool($value)) {
             return $value ? 'TRUE' : 'FALSE';
@@ -113,8 +153,7 @@ class SqlSimpleExpressionVisitor
             return var_export($value, true);
         }
         if ($value instanceof Glob) {
-            // Do not use var_export here or eventual backslashes will be doubled
-            return sprintf("'%s'", $value->toLike());
+            return var_export($value->toLike(), true);
         }
         if ($value instanceof \DateTimeInterface) {
             return $value->format('Y-m-d H:i:s');

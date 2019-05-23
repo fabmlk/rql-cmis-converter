@@ -7,15 +7,16 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\Factory;
+namespace Tms\Rql\Factory;
 
-use Tms\Rql\Cmis\Builder\QueryBuilderInterface;
-use Tms\Rql\Cmis\Builder\SqlQueryBuilder;
-use Tms\Rql\Cmis\ConditionsExtension\AbstractEnhanceableConditions;
-use Tms\Rql\Cmis\Builder\ConditionsBuilderInterface;
-use Tms\Rql\Cmis\ParserExtension\SqlParser;
-use Tms\Rql\Cmis\Builder\SqlConditionsBuilder;
-use Tms\Rql\Cmis\Visitor\SqlSimpleExpressionVisitor;
+use Tms\Rql\Builder\ConditionsBuilderInterface;
+use Tms\Rql\Builder\QueryBuilderInterface;
+use Tms\Rql\Builder\SqlConditionsBuilder;
+use Tms\Rql\Builder\SqlQueryBuilder;
+use Tms\Rql\ConditionsExtension\SqlNotConditions;
+use Tms\Rql\ParserExtension\SqlParser;
+use Tms\Rql\Visitor\SqlParamsExpressionVisitor;
+use Tms\Rql\Visitor\SqlSimpleExpressionVisitor;
 use Xiag\Rql\Parser\Parser;
 
 /**
@@ -40,7 +41,7 @@ class SqlFactory implements FactoryInterface
     {
         switch ($type) {
             case self::TYPE_PARAMS:
-                return new SqlSimpleExpressionVisitor();
+                return new SqlParamsExpressionVisitor();
             case self::TYPE_SIMPLE:
             case '':
                 return new SqlSimpleExpressionVisitor();
@@ -62,7 +63,7 @@ class SqlFactory implements FactoryInterface
      */
     public function getConditionsBuilder(string $type = ''): ConditionsBuilderInterface
     {
-        $enhancedConditions = AbstractEnhanceableConditions::make();
+        $enhancedConditions = SqlNotConditions::make();
 
         return new SqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));
     }

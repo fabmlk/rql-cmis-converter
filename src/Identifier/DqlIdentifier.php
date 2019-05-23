@@ -13,9 +13,9 @@ use Latitude\QueryBuilder\Identifier;
 use Latitude\QueryBuilder\IdentifierException;
 
 /**
- * Class CmisqlIdentifier.
+ * Class DqlIdentifier.
  */
-class CmisqlIdentifier extends Identifier
+class DqlIdentifier extends Identifier
 {
     /**
      * {@inheritdoc}
@@ -35,7 +35,8 @@ class CmisqlIdentifier extends Identifier
     }
 
     /**
-     * Ensure that identifiers match CMIS QL standard.
+     * Ensure that identifiers match DQL identifier or fully_qualified_name:
+     * https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#ebnf
      *
      * @param string $identifier
      *
@@ -43,7 +44,7 @@ class CmisqlIdentifier extends Identifier
      */
     public function guardIdentifierOverride(string $identifier): void
     {
-        if (false === \preg_match('/^[a-zA-Z](?:[a-zA-Z0-9_:]+)?$/', $identifier)) {
+        if (false === \preg_match('/^([a-z_][a-z0-9_]*\\\\?)+(?<!\\\\)$/', $identifier)) {
             throw IdentifierException::invalidIdentifier($identifier);
         }
     }

@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator;
+namespace Tms\Rql\ParserExtension\Node\Query\FunctionOperator;
 
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 

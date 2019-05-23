@@ -11,15 +11,15 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension\NodeParser\Query\FunctionOperator\Cmisql;
+namespace Tms\Rql\ParserExtension\NodeParser\Query\FunctionOperator\Cmisql;
 
-use Tms\Rql\Cmis\ParserExtension\Node\Query\Cmisql\AndContainsNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\Cmisql\OrContainsNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
-use Tms\Rql\Cmis\ParserExtension\Node\Query\FunctionOperator\Cmisql\NclNode;
+use Tms\Rql\ParserExtension\Node\Query\Cmisql\AndContainsNode;
+use Tms\Rql\ParserExtension\Node\Query\Cmisql\OrContainsNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\AftsNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\CoeNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\ColNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NclNode;
 use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Exception\SyntaxErrorException;
 use Xiag\Rql\Parser\Node\Query\LogicalOperator\AndNode;

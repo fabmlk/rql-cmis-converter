@@ -5,14 +5,14 @@ Parseur RQL pouvant générer des requêtes CMIS QL.
 
 Cette librairie peut se décomposer en 2 parties:
   - extension du parseur RQL proposé par [xiag-ag/rql-parser](https://github.com/xiag-ag/rql-parser) afin d'y ajouter des fonctionalités utiles à CMIS-QL
-  - génération d'une requête CMIS-QL à partir de l'arbre composé par le parseur
+  - génération d'une requête SQL, CMIS-QL ou DQL à partir de l'arbre composé par le parseur
 
 Principe
 --------
 
 RQL (Resource Query Language) est un langage de requête proposé par [Persevere](http://www.persvr.org) destiné à être utilisé directement en query string d'URIs pour opérer sur des structures de données de style "objet".
 
-Une des utilisations possibles est donc d'effectuer des requêtes SQL ou CMIS QL de type `SELECT`.
+Une des utilisations possibles est donc d'effectuer des requêtes SQL, DQL ou CMIS QL de type `SELECT`.
 
 Voir section [resources](#resources) pour une présentation plus détaillée du langage RQL.
 
@@ -27,7 +27,7 @@ require 'vendor/autoload.php';
 // default lexer supports all RQL rules
 $lexer = new Xiag\Rql\Parser\Lexer();
 
-$factory = new Tms\Rql\Cmis\Factory\CmisqlFactory();
+$factory = new Tms\Rql\Factory\CmisqlFactory();
 $parser = $factory->getParser();
 
 // RQL code
@@ -39,7 +39,7 @@ $tokens = $lexer->tokenize($rql);
 $tree = $parser->parse($tokens);
 
 // generate CMIS QL
-$builder = $factory->getBuilder(Tms\Rql\Cmis\Factory\CmisqlFactory::TYPE_PARAMS);
+$builder = $factory->getBuilder(Tms\Rql\Factory\CmisqlFactory::TYPE_PARAMS);
 $query = $builder->build($tree, 'cmis:document');
 echo $query->sql() . PHP_EOL;
 var_dump($query->params());

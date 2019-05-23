@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Tms\Rql\Cmis\ParserExtension;
+namespace Tms\Rql\ParserExtension;
 
-use Tms\Rql\Cmis\ParserExtension\Node\GroupbyNode;
+use Tms\Rql\ParserExtension\Node\GroupbyNode;
 use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\QueryBuilder as BaseQueryBuilder;
 

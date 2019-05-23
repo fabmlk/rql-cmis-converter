@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace Tms\Rql\Query;
 
 use Latitude\QueryBuilder\SelectQuery;
-use Tms\Rql\Identifier\CmisqlIdentifier;
+use Tms\Rql\Identifier\DqlIdentifier;
 
 /**
- * Class CmisqlQuery.
+ * Class DqlQuery.
  */
-class CmisqlQuery implements QueryInterface
+class DqlQuery implements QueryInterface
 {
     /**
      * @var SelectQuery
@@ -37,7 +37,7 @@ class CmisqlQuery implements QueryInterface
      */
     public function sql(): string
     {
-        return $this->selectQuery->sql(CmisqlIdentifier::make());
+        return $this->selectQuery->sql(DqlIdentifier::make());
     }
 
     /**
