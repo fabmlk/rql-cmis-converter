@@ -13,6 +13,7 @@ use Latitude\QueryBuilder\Expression as e;
 use Latitude\QueryBuilder\SelectQuery;
 use Tms\Rql\ParserExtension\Node\GroupbyNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
 use Tms\Rql\Query\DqlQuery;
 use Tms\Rql\Query\QueryInterface;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
@@ -67,8 +68,12 @@ class DqlQueryBuilder extends SqlQueryBuilder
         $this->notify($node);
 
         foreach ($node->getFields() as $field) {
-            if ($field instanceof AggregateNode) {
-                $fields[] = e::make($field->getFunction().'(%s)', $this->wrapWithRootAlias($field->getField()));
+            if ($field instanceof AggregateWithValueNode) {
+                if ($field->getValue()) {
+                    $fields[] = e::make(\strtoupper($field->getFunction()).'(%s,%s)', $this->wrapWithRootAlias($field->getField()), $field->getValue());
+                } else {
+                    $fields[] = e::make(\strtoupper($field->getFunction()).'(%s)', $this->wrapWithRootAlias($field->getField()));
+                }
             } else {
                 $fields[] = $this->wrapWithRootAlias($field);
             }

@@ -14,7 +14,7 @@ use Tms\Rql\Builder\DqlConditionsBuilder;
 use Tms\Rql\Builder\DqlQueryBuilder;
 use Tms\Rql\Builder\QueryBuilderInterface;
 use Tms\Rql\ConditionsExtension\SqlNotConditions;
-use Tms\Rql\ParserExtension\SqlParser;
+use Tms\Rql\ParserExtension\DqlParser;
 use Tms\Rql\Visitor\DqlParamsExpressionVisitor;
 use Tms\Rql\Visitor\DqlSimpleExpressionVisitor;
 use Xiag\Rql\Parser\Parser;
@@ -77,7 +77,7 @@ class DqlFactory implements FactoryInterface
      */
     public function getParser(): Parser
     {
-        return new SqlParser();
+        return new DqlParser();
     }
 
     /**

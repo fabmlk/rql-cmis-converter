@@ -97,7 +97,7 @@ class SqlQueryBuilder implements QueryBuilderInterface
 
         foreach ($node->getFields() as $field) {
             if ($field instanceof AggregateNode) {
-                $fields[] = e::make($field->getFunction().'(%s)', $field->getField());
+                $fields[] = e::make(\strtoupper($field->getFunction()).'(%s)', $field->getField());
             } else {
                 $fields[] = $field;
             }
