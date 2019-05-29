@@ -87,7 +87,7 @@ class DqlFactory implements FactoryInterface
     {
         $enhancedConditions = SqlNotConditions::make();
 
-        return new DqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));
+        return new DqlConditionsBuilder($this->rootAlias, $enhancedConditions, $this->getExpressionVisitor($type));
     }
 
     /**

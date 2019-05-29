@@ -1,7 +1,7 @@
-RQL CMIS CONVERTER
+RQL SQL/CMISQL/DQL CONVERTER
 =====
 
-Parseur RQL pouvant générer des requêtes CMIS QL.
+Parseur RQL pouvant générer des requêtes SQL, CMIS QL ou DQL.
 
 Cette librairie peut se décomposer en 2 parties:
   - extension du parseur RQL proposé par [xiag-ag/rql-parser](https://github.com/xiag-ag/rql-parser) afin d'y ajouter des fonctionalités utiles à CMIS-QL
