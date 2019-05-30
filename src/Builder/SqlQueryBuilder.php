@@ -15,6 +15,7 @@ use Tms\Rql\ParserExtension\Node\GroupbyNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
 use Tms\Rql\Query\QueryInterface;
 use Tms\Rql\Query\SqlQuery;
+use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\LimitNode;
 use Xiag\Rql\Parser\Node\SelectNode;
@@ -87,13 +88,14 @@ class SqlQueryBuilder implements QueryBuilderInterface
     /**
      * Process select node.
      *
-     * @param SelectNode $node
+     * @param SelectNode|AbstractNode $node
      */
     protected function processSelectNode(SelectNode $node): void
     {
         $fields = [];
 
-        $this->notify($node);
+        /** @var SelectNode $node */
+        $node = $this->notify($node);
 
         foreach ($node->getFields() as $field) {
             if ($field instanceof AggregateNode) {
@@ -125,11 +127,12 @@ class SqlQueryBuilder implements QueryBuilderInterface
     /**
      * Process sort node.
      *
-     * @param SortNode $node
+     * @param SortNode|AbstractNode $node
      */
     protected function processSortNode(SortNode $node): void
     {
-        $this->notify($node);
+        /** @var SortNode $node */
+        $node = $this->notify($node);
 
         // Convert ['a' => 1, 'b' => -1] to [['a', 'ASC'], ['b', 'DESC']]
         $out = [];
@@ -143,11 +146,12 @@ class SqlQueryBuilder implements QueryBuilderInterface
     /**
      * Process limit node.
      *
-     * @param LimitNode $node
+     * @param LimitNode|AbstractNode $node
      */
     protected function processLimitNode(LimitNode $node): void
     {
-        $this->notify($node);
+        /** @var LimitNode $node */
+        $node = $this->notify($node);
         $this->selectQuery->limit($node->getLimit());
 
         if (null !== $node->getOffset()) {
@@ -158,11 +162,12 @@ class SqlQueryBuilder implements QueryBuilderInterface
     /**
      * Process group by node.
      *
-     * @param GroupbyNode $node
+     * @param GroupbyNode|AbstractNode $node
      */
     protected function processGroupbyNode(GroupbyNode $node): void
     {
-        $this->notify($node);
+        /** @var GroupbyNode $node */
+        $node = $this->notify($node);
         $this->selectQuery->groupBy(...$node->getFields());
     }
 

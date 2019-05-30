@@ -19,5 +19,5 @@ interface VisitExpressionListenerInterface
     /**
      * @param AbstractNode $node
      */
-    public function update(AbstractNode $node): void;
+    public function update(AbstractNode $node);
 }

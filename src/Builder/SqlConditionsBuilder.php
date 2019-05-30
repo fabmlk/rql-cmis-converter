@@ -11,6 +11,7 @@ namespace Tms\Rql\Builder;
 
 use Tms\Rql\ConditionsExtension\AbstractEnhanceableConditions;
 use Tms\Rql\Visitor\SqlSimpleExpressionVisitor;
+use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\Query\AbstractLogicalOperatorNode;
 use Xiag\Rql\Parser\Node\Query\LogicalOperator\AndNode;
@@ -147,14 +148,14 @@ class SqlConditionsBuilder implements ConditionsBuilderInterface
     /**
      * Visit current node to determine which method to call depending on node type.
      *
-     * @param AbstractQueryNode $node
-     * @param null|string       $group
+     * @param AbstractQueryNode|AbstractNode $node
+     * @param null|string                    $group
      *
      * @throws \DomainException if $node is unrecognized
      */
     protected function visit(AbstractQueryNode $node, ?string $group): void
     {
-        $this->notify($node); // first, notify the listeners
+        $node = $this->notify($node); // first, notify the listeners
         
         if ($node instanceof AndNode) {
             $this->applyLogicalGroup($group, 'andGroup');

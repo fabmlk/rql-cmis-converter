@@ -39,10 +39,15 @@ trait VisitExpressionDispatcherTrait
      *
      * @param AbstractNode $node
      */
-    public function notify(AbstractNode $node): void
+    public function notify(AbstractNode $node)
     {
         foreach ($this->listeners as $listener) {
-            $listener->update($node);
+            $ret = $listener->update($node);
+            if ($ret instanceof AbstractNode) {
+                $node = $ret;
+            }
         }
+
+        return $node;
     }
 }

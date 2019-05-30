@@ -15,6 +15,7 @@ use Tms\Rql\ParserExtension\Node\GroupbyNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
 use Tms\Rql\Query\DqlQuery;
 use Tms\Rql\Query\QueryInterface;
+use Xiag\Rql\Parser\AbstractNode;
 use Xiag\Rql\Parser\Node\SelectNode;
 use Xiag\Rql\Parser\Node\SortNode;
 use Tms\Rql\ParserExtension\SqlQuery as RqlQuery;
@@ -56,13 +57,14 @@ class DqlQueryBuilder extends SqlQueryBuilder
     /**
      * Process select node.
      *
-     * @param SelectNode $node
+     * @param SelectNode|AbstractNode $node
      */
     protected function processSelectNode(SelectNode $node): void
     {
         $fields = [];
 
-        $this->notify($node);
+        /** @var SelectNode $node */
+        $node = $this->notify($node);
 
         foreach ($node->getFields() as $field) {
             if ($field instanceof AggregateWithValueNode) {
@@ -81,11 +83,12 @@ class DqlQueryBuilder extends SqlQueryBuilder
     /**
      * Process sort node.
      *
-     * @param SortNode $node
+     * @param SortNode|AbstractNode $node
      */
     protected function processSortNode(SortNode $node): void
     {
-        $this->notify($node);
+        /** @var SortNode $node */
+        $node = $this->notify($node);
 
         // Convert ['a' => 1, 'b' => -1] to [['o.a', 'ASC'], ['o.b', 'DESC']]
         $out = [];
@@ -99,11 +102,12 @@ class DqlQueryBuilder extends SqlQueryBuilder
     /**
      * Process group by node.
      *
-     * @param GroupbyNode $node
+     * @param GroupbyNode|AbstractNode $node
      */
     protected function processGroupbyNode(GroupbyNode $node): void
     {
-        $this->notify($node);
+        /** @var GroupbyNode $node */
+        $node = $this->notify($node);
         $this->selectQuery->groupBy(...array_map([$this, 'wrapWithRootAlias'], $node->getFields()));
     }
 
