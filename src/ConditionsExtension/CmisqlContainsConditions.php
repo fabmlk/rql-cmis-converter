@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Tms\Rql\ConditionsExtension;
 
+use Latitude\QueryBuilder\Conditions;
+
 /**
  * Class CmisqlContainsConditions.
  */
@@ -20,7 +22,7 @@ class CmisqlContainsConditions extends SqlNotConditions
     protected const GROUP_NAME = 'CONTAINS';
 
     /**
-     * @return CmisqlContainsConditions
+     * @return CmisqlContainsConditions|Conditions
      */
     public function containsGroup(): self
     {

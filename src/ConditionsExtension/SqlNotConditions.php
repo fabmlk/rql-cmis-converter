@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Tms\Rql\ConditionsExtension;
 
+use Latitude\QueryBuilder\Conditions;
+
 /**
  * Class EnhanceableConditions.
  */
@@ -23,7 +25,7 @@ class SqlNotConditions extends AbstractEnhanceableConditions
      *
      * Start a new grouping that will be applied with a logical "NOT" (currently unused).
      *
-     * @return AbstractEnhanceableConditions
+     * @return AbstractEnhanceableConditions|Conditions
      */
     public function notGroup(): self
     {
@@ -33,7 +35,7 @@ class SqlNotConditions extends AbstractEnhanceableConditions
     /**
      * Start a new grouping that will be applied with a logical "AND NOT".
      *
-     * @return SqlNotConditions
+     * @return SqlNotConditions|Conditions
      */
     public function andNotGroup(): self
     {
@@ -43,7 +45,7 @@ class SqlNotConditions extends AbstractEnhanceableConditions
     /**
      * Start a new grouping that will be applied with a logical "OR NOT".
      *
-     * @return SqlNotConditions
+     * @return SqlNotConditions|Conditions
      */
     public function orNotGroup(): self
     {

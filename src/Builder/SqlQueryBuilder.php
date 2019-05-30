@@ -19,7 +19,7 @@ use Xiag\Rql\Parser\Node\AbstractQueryNode;
 use Xiag\Rql\Parser\Node\LimitNode;
 use Xiag\Rql\Parser\Node\SelectNode;
 use Xiag\Rql\Parser\Node\SortNode;
-use Xiag\Rql\Parser\Query as RqlQuery;
+use Tms\Rql\ParserExtension\SqlQuery as RqlQuery;
 
 /**
  * Class SqlQueryBuilder.
@@ -34,16 +34,16 @@ class SqlQueryBuilder implements QueryBuilderInterface
     protected $selectQuery;
 
     /**
-     * @var ConditionsBuilderInterface
+     * @var SqlConditionsBuilder
      */
     protected $conditionsBuilder;
 
     /**
      * SqlQueryBuilder constructor.
      *
-     * @param ConditionsBuilderInterface $conditionsBuilder
+     * @param SqlConditionsBuilder $conditionsBuilder
      */
-    public function __construct(ConditionsBuilderInterface $conditionsBuilder)
+    public function __construct(SqlConditionsBuilder $conditionsBuilder)
     {
         $this->selectQuery = SelectQuery::make();
         $this->conditionsBuilder = $conditionsBuilder;
@@ -113,6 +113,7 @@ class SqlQueryBuilder implements QueryBuilderInterface
     protected function processQueryNode(AbstractQueryNode $node): void
     {
         // notification to listeners will be handled inside the conditions builder
+        /** @var VisitExpressionListenerInterface $listener */
         foreach ($this->listeners as $listener) {
             $this->conditionsBuilder->onVisitExpression($listener);
         }

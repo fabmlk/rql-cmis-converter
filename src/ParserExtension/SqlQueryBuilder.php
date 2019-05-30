@@ -30,7 +30,7 @@ class SqlQueryBuilder extends BaseQueryBuilder
     /**
      * @param AbstractNode $node
      *
-     * @return $this|SqlQuery
+     * @return $this|SqlQuery|BaseQueryBuilder
      */
     public function addNode(AbstractNode $node)
     {

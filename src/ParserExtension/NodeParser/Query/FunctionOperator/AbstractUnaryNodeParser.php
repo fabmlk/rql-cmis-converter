@@ -59,4 +59,16 @@ abstract class AbstractUnaryNodeParser implements NodeParserInterface
     {
         return $tokenStream->test(Token::T_OPERATOR, $this->getNodeName());
     }
+
+    /**
+     * @return string
+     */
+    abstract public function getNodeName(): string;
+
+    /**
+     * @param $value
+     *
+     * @return AbstractNode
+     */
+    abstract public function getNode($value): AbstractNode;
 }

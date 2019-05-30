@@ -7,7 +7,7 @@ use Xiag\Rql\Parser\AbstractNode;
 
 class EchoVisitor implements VisitExpressionListenerInterface
 {
-    public function update(AbstractNode &$node): void {
+    public function update(AbstractNode $node): void {
         if (method_exists($node, 'getField')) {
             echo "Visiting field: " . $node->getField() . PHP_EOL;
         }

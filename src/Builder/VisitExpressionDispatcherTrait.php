@@ -17,7 +17,7 @@ use Xiag\Rql\Parser\AbstractNode;
 trait VisitExpressionDispatcherTrait
 {
     /**
-     * @var SplObjectStorage
+     * @var  \SplObjectStorage
      */
     private $listeners;
 
@@ -39,7 +39,7 @@ trait VisitExpressionDispatcherTrait
      *
      * @param AbstractNode $node
      */
-    public function notify(AbstractNode &$node): void
+    public function notify(AbstractNode $node): void
     {
         foreach ($this->listeners as $listener) {
             $listener->update($node);

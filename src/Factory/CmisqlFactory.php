@@ -13,6 +13,8 @@ use Tms\Rql\Builder\CmisqlConditionsBuilder;
 use Tms\Rql\Builder\CmisqlQueryBuilder;
 use Tms\Rql\Builder\ConditionsBuilderInterface;
 use Tms\Rql\Builder\QueryBuilderInterface;
+use Tms\Rql\Builder\SqlConditionsBuilder;
+use Tms\Rql\ConditionsExtension\AbstractEnhanceableConditions;
 use Tms\Rql\ConditionsExtension\CmisqlContainsConditions;
 use Tms\Rql\ParserExtension\CmisqlParser;
 use Tms\Rql\Visitor\CmisqlParamsExpressionVisitor;
@@ -60,9 +62,12 @@ class CmisqlFactory implements FactoryInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return ConditionsBuilderInterface|SqlConditionsBuilder
      */
     public function getConditionsBuilder(string $type = ''): ConditionsBuilderInterface
     {
+        /** @var AbstractEnhanceableConditions $enhancedConditions */
         $enhancedConditions = CmisqlContainsConditions::make();
 
         return new CmisqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));

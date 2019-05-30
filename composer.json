@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.1.0",
         "xiag/rql-parser": "^2.0",
         "latitude/latitude": "^2.3"
     },

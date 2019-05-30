@@ -17,7 +17,7 @@ use Xiag\Rql\Parser\AbstractNode;
 interface VisitExpressionListenerInterface
 {
     /**
-     * @param AbstractNode $node reference (meaning the whole node can be swapped if desired)
+     * @param AbstractNode $node
      */
-    public function update(AbstractNode &$node): void;
+    public function update(AbstractNode $node): void;
 }

@@ -12,15 +12,12 @@ namespace Tms\Rql\Builder;
 use Latitude\QueryBuilder\Expression as e;
 use Latitude\QueryBuilder\SelectQuery;
 use Tms\Rql\ParserExtension\Node\GroupbyNode;
-use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
 use Tms\Rql\Query\DqlQuery;
 use Tms\Rql\Query\QueryInterface;
-use Xiag\Rql\Parser\Node\AbstractQueryNode;
-use Xiag\Rql\Parser\Node\LimitNode;
 use Xiag\Rql\Parser\Node\SelectNode;
 use Xiag\Rql\Parser\Node\SortNode;
-use Xiag\Rql\Parser\Query as RqlQuery;
+use Tms\Rql\ParserExtension\SqlQuery as RqlQuery;
 
 /**
  * Class DqlQueryBuilder.
@@ -35,10 +32,10 @@ class DqlQueryBuilder extends SqlQueryBuilder
     /**
      * SqlQueryBuilder constructor.
      *
-     * @param ConditionsBuilderInterface $conditionsBuilder
-     * @param string                     $rootAlias the entity alias involved in the construction of the query
+     * @param SqlConditionsBuilder $conditionsBuilder
+     * @param string               $rootAlias the entity alias involved in the construction of the query
      */
-    public function __construct(ConditionsBuilderInterface $conditionsBuilder, string $rootAlias)
+    public function __construct(SqlConditionsBuilder $conditionsBuilder, string $rootAlias)
     {
         parent::__construct($conditionsBuilder);
         $this->selectQuery = SelectQuery::make($rootAlias);

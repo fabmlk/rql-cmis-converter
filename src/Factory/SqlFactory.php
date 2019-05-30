@@ -13,6 +13,7 @@ use Tms\Rql\Builder\ConditionsBuilderInterface;
 use Tms\Rql\Builder\QueryBuilderInterface;
 use Tms\Rql\Builder\SqlConditionsBuilder;
 use Tms\Rql\Builder\SqlQueryBuilder;
+use Tms\Rql\ConditionsExtension\AbstractEnhanceableConditions;
 use Tms\Rql\ConditionsExtension\SqlNotConditions;
 use Tms\Rql\ParserExtension\SqlParser;
 use Tms\Rql\Visitor\SqlParamsExpressionVisitor;
@@ -60,9 +61,12 @@ class SqlFactory implements FactoryInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return ConditionsBuilderInterface|SqlConditionsBuilder
      */
     public function getConditionsBuilder(string $type = ''): ConditionsBuilderInterface
     {
+        /** @var AbstractEnhanceableConditions $enhancedConditions */
         $enhancedConditions = SqlNotConditions::make();
 
         return new SqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));

@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Tms\Rql\ParserExtension\ValueParser\Dql;
 
-use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
 use Xiag\Rql\Parser\SubParserInterface;
 use Xiag\Rql\Parser\Token;
