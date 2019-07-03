@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Tms\Rql\Visitor;
 
-use Latitude\QueryBuilder\ValueList as in;
+use Tms\Rql\Builder\DqlIndexedPlaceholderValueList as in;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
 use Xiag\Rql\Parser\Glob;
@@ -121,26 +121,34 @@ class DqlParamsExpressionVisitor
                 ];
             case $node instanceof InNode:
                 if ($field instanceof AggregateWithValueNode) {
-                    return [
-                        sprintf('%s(%s.%s) IN ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
+                    $result = [
+                        sprintf('%s(%s.%s) IN ?', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField()),
+                        $this->encodeValue($node->getValues()),
+                    ];
+                } else {
+                    $result = [
+                        sprintf('%s.%s IN ?', $this->rootAlias, $node->getField()),
                         $this->encodeValue($node->getValues()),
                     ];
                 }
-                return [
-                    sprintf('%s.%s IN ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
-                    $this->encodeValue($node->getValues()),
-                ];
+                $this->placeholderInc += count($node->getValues());
+
+                return $result;
             case $node instanceof OutNode:
                 if ($field instanceof AggregateWithValueNode) {
-                    return [
-                        sprintf('%s(%s.%s) NOT IN ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
+                    $result = [
+                        sprintf('%s(%s.%s) NOT IN ?', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField()),
+                        $this->encodeValue($node->getValues()),
+                    ];
+                } else {
+                    $result = [
+                        sprintf('%s.%s NOT IN ?', $this->rootAlias, $node->getField()),
                         $this->encodeValue($node->getValues()),
                     ];
                 }
-                return [
-                    sprintf('%s.%s NOT IN ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++),
-                    $this->encodeValue($node->getValues()),
-                ];
+                $this->placeholderInc += count($node->getValues());
+
+                return $result;
             case $node instanceof LikeNode:
                 if ($field instanceof AggregateWithValueNode) {
                     return [
@@ -194,7 +202,8 @@ class DqlParamsExpressionVisitor
                         return \is_object($item) ? $this->encodeValue($item) : $item;
                     },
                     $value
-                )
+                ),
+                $this->placeholderInc
             );
         }
         if (\is_bool($value)) {
