@@ -70,6 +70,7 @@ class DqlParser extends BaseParser
             ->addNodeParser(new ComparisonOperator\Fiql\GeNodeParser($fieldAggregateWithValueParser, $scalarParser))
             ->addNodeParser(new ComparisonOperator\Fiql\LikeNodeParser($fieldAggregateWithValueParser, $globParser))
 
+            ->addNodeParser(new ExtensionFunctionOperator\Dql\AtDepthWithDepthNodeParser($scalarParser, $integerParser))
             ->addNodeParser(new ExtensionComparisonOperator\BetweenNodeParser($scalarParser));
 
         return (new NodeParserChain())

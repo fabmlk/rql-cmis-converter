@@ -11,6 +11,7 @@ namespace Tms\Rql\Visitor;
 
 use Tms\Rql\Builder\DqlIndexedPlaceholderValueList as in;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AtDepthNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
@@ -61,10 +62,9 @@ class DqlParamsExpressionVisitor
      */
     public function __invoke(AbstractQueryNode $node): array
     {
-        $field = $node->getField();
-
         switch (true) {
             case $node instanceof NeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) <> ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
@@ -76,6 +76,7 @@ class DqlParamsExpressionVisitor
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof LtNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) < ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
@@ -87,6 +88,7 @@ class DqlParamsExpressionVisitor
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof GtNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) > ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
@@ -98,6 +100,7 @@ class DqlParamsExpressionVisitor
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof GeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) >= ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
@@ -109,6 +112,7 @@ class DqlParamsExpressionVisitor
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof LeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) <= ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
@@ -120,6 +124,7 @@ class DqlParamsExpressionVisitor
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof InNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     $result = [
                         sprintf('%s(%s.%s) IN ?', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField()),
@@ -135,6 +140,7 @@ class DqlParamsExpressionVisitor
 
                 return $result;
             case $node instanceof OutNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     $result = [
                         sprintf('%s(%s.%s) NOT IN ?', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField()),
@@ -150,6 +156,7 @@ class DqlParamsExpressionVisitor
 
                 return $result;
             case $node instanceof LikeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) LIKE ?%d', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->placeholderInc++),
@@ -165,6 +172,7 @@ class DqlParamsExpressionVisitor
                     sprintf('%s.%s BETWEEN ?%d AND ?%d', $this->rootAlias, $node->getField(), $this->placeholderInc++, $this->placeholderInc++),
                 ];
             case $node instanceof EqNode:
+                $field = $node->getField();
                 $encodedValue = $this->encodeValue($node->getValue());
                 $operator = 'NULL' === $encodedValue ? 'IS' : '=';
 
@@ -177,6 +185,12 @@ class DqlParamsExpressionVisitor
                 return [
                     sprintf('%s.%s %s ?%d', $this->rootAlias, $node->getField(), $operator, $this->placeholderInc++),
                     $encodedValue
+                ];
+            case $node instanceof AtDepthNode:
+                return [
+                    sprintf('AT_DEPTH(?%d,?%d)', $this->placeholderInc++, $this->placeholderInc++),
+                    $this->encodeValue($node->getLeftValue()),
+                    $this->encodeValue($node->getRightValue())
                 ];
             default:
                 throw new \DomainException(sprintf('Unknown node %s', get_class($node)));

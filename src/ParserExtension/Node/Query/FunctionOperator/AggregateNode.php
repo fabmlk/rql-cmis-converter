@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace Tms\Rql\ParserExtension\Node\Query\FunctionOperator;
 
-use Xiag\Rql\Parser\AbstractNode;
+use Xiag\Rql\Parser\Node\AbstractQueryNode;
 
 /**
  * aggregate(fieldName).
  *
  * {@link https://github.com/xiag-ag/rql-parser/blob/master/examples/03-new-top-operator.php}
  */
-class AggregateNode extends AbstractNode
+class AggregateNode extends AbstractQueryNode
 {
     /**
      * @var string

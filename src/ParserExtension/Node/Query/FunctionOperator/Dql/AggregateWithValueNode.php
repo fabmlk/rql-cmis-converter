@@ -27,18 +27,18 @@ class AggregateWithValueNode extends AggregateNode
      *
      * @param string $function
      * @param string $field
-     * @param string|null $value
+     * @param mixed|null $value
      */
-    public function __construct(string $function, string $field, string $value = null)
+    public function __construct(string $function, string $field, $value = null)
     {
         parent::__construct($function, $field);
         $this->value = $value;
     }
 
     /**
-     * @return string|null
+     * @return mixed|null
      */
-    public function getValue(): ?string
+    public function getValue()
     {
         return $this->value;
     }

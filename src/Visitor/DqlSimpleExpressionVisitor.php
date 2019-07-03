@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Tms\Rql\Visitor;
 
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AtDepthNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\BetweenNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
@@ -55,10 +56,9 @@ class DqlSimpleExpressionVisitor
      */
     public function __invoke(AbstractQueryNode $node): array
     {
-        $field = $node->getField();
-
         switch (true) {
             case $node instanceof NeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) <> %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
@@ -68,6 +68,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s <> %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof LtNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) < %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
@@ -77,6 +78,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s < %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof GtNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) > %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
@@ -86,6 +88,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s > %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof GeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) >= %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
@@ -95,6 +98,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s >= %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof LeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) <= %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
@@ -104,6 +108,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s <= %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof InNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) IN %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValues()))
@@ -113,6 +118,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s IN %s', $this->rootAlias, $field, $this->encodeValue($node->getValues())),
                 ];
             case $node instanceof OutNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) NOT IN %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValues()))
@@ -122,6 +128,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s NOT IN %s', $this->rootAlias, $field, $this->encodeValue($node->getValues())),
                 ];
             case $node instanceof LikeNode:
+                $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
                         sprintf('%s(%s.%s) LIKE %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
@@ -135,6 +142,7 @@ class DqlSimpleExpressionVisitor
                     sprintf('%s.%s BETWEEN %s AND %s', $this->rootAlias, $field, $node->getFrom(), $node->getTo()),
                 ];
             case $node instanceof EqNode:
+                $field = $node->getField();
                 $encodedValue = $this->encodeValue($node->getValue());
                 $operator = 'NULL' === $encodedValue ? 'IS' : '=';
 
@@ -145,6 +153,10 @@ class DqlSimpleExpressionVisitor
                 }
                 return [
                     sprintf('%s.%s %s %s', $this->rootAlias, $field, $operator, $encodedValue),
+                ];
+            case $node instanceof AtDepthNode:
+                return [
+                    sprintf('AT_DEPTH(%s,%d)', $this->encodeValue($node->getLeftValue()), $this->encodeValue($node->getRightValue()))
                 ];
             default:
                 throw new \DomainException(sprintf('Unknown node %s', get_class($node)));
