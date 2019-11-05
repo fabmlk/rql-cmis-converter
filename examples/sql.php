@@ -20,6 +20,6 @@ $builder = $factory->getBuilder(SqlFactory::TYPE_SIMPLE);
 $builder->onVisitExpression(new EchoVisitor());
 
 $tree = $parser->parse($tokens);
-$query = $builder->build($tree, 'my_table');
+$query = $builder->build($tree, 'my_table t');
 
 echo SqlFormatter::format($query->sql());

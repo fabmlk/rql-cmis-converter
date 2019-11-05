@@ -17,6 +17,31 @@ use Latitude\QueryBuilder\Conditions;
 abstract class AbstractEnhanceableConditions extends Conditions
 {
     /**
+     * @var callable
+     */
+    protected $aliasResolver;
+
+
+    protected function __construct(Conditions $parent = null)
+    {
+        parent::__construct($parent);
+        if ($parent) {
+            $this->aliasResolver = $parent->aliasResolver;
+        }
+    }
+
+    /**
+     * @param callable $aliasResolver
+     *
+     * @return $this
+     */
+    public function withAliasResolver(callable $aliasResolver): self
+    {
+        $this->aliasResolver = $aliasResolver;
+        return $this;
+    }
+
+    /**
      * Enhances a statement.
      *
      * @param array  $part

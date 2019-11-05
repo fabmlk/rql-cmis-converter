@@ -30,6 +30,22 @@ use Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode;
 class SqlParamsExpressionVisitor
 {
     /**
+     * @var string
+     */
+    protected $aliasResolver;
+
+
+    /**
+     * DqlSimpleExpressionVisitor constructor.
+     *
+     * @param callable $aliasResolver
+     */
+    public function __construct(callable $aliasResolver)
+    {
+        $this->aliasResolver = $aliasResolver;
+    }
+
+    /**
      * @param AbstractComparisonOperatorNode $node
      *
      * @return array
@@ -40,57 +56,67 @@ class SqlParamsExpressionVisitor
     {
         switch (true) {
             case $node instanceof NeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s <> ?', $node->getField()),
+                    sprintf('%s.%s <> ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof LtNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s < ?', $node->getField()),
+                    sprintf('%s.%s < ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof GtNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s > ?', $node->getField()),
+                    sprintf('%s.%s > ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof GeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s >= ?', $node->getField()),
+                    sprintf('%s.%s >= ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof LeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s <= ?', $node->getField()),
+                    sprintf('%s.%s <= ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof InNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s IN ?', $node->getField()),
+                    sprintf('%s.%s IN ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValues()),
                 ];
             case $node instanceof OutNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s NOT IN ?', $node->getField()),
+                    sprintf('%s.%s NOT IN ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValues()),
                 ];
             case $node instanceof LikeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s LIKE ?', $node->getField()),
+                    sprintf('%s.%s LIKE ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof BetweenNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s BETWEEN ? AND ?', $node->getField()),
+                    sprintf('%s.%s BETWEEN ? AND ?', $alias, $node->getField()),
                     $node->getFrom(),
                     $node->getTo(),
                 ];
             case $node instanceof EqNode:
+                $alias = ($this->aliasResolver)($node);
                 $encodedValue = $this->encodeValue($node->getValue());
                 $operator = 'NULL' === $encodedValue ? 'IS' : '=';
 
                 return [
-                    sprintf('%s %s ?', $node->getField(), $operator),
+                    sprintf('%s.%s %s ?', $alias, $node->getField(), $operator),
                     $encodedValue,
                 ];
             default:

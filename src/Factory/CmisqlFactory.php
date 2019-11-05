@@ -37,16 +37,43 @@ class CmisqlFactory implements FactoryInterface
     public const TYPE_SIMPLE = 'simple';
 
     /**
+     * @var callable|\Closure
+     */
+    private $aliasResolver;
+
+    /**
+     * CmisqlFactory constructor.
+     *
+     * @param callable|null $aliasResolver a callable that returns the alias
+     */
+    public function __construct($aliasResolver = null)
+    {
+        if (!$aliasResolver) {
+            $aliasResolver = static function ($node, $alias) { return $alias; };
+        }
+
+        $this->setAliasResolver($aliasResolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAliasResolver(callable $aliasResolver): void
+    {
+        $this->aliasResolver = new AliasResolverWrapper($aliasResolver);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getExpressionVisitor(string $type = ''): callable
     {
         switch ($type) {
             case self::TYPE_PARAMS:
-                return new CmisqlParamsExpressionVisitor();
+                return new CmisqlParamsExpressionVisitor($this->aliasResolver);
             case self::TYPE_SIMPLE:
             case '':
-                return new CmisqlSimpleExpressionVisitor();
+                return new CmisqlSimpleExpressionVisitor($this->aliasResolver);
             default:
                 throw new \InvalidArgumentException(sprintf('Unkown visitor type %s', $type));
         }
@@ -69,8 +96,9 @@ class CmisqlFactory implements FactoryInterface
     {
         /** @var AbstractEnhanceableConditions $enhancedConditions */
         $enhancedConditions = CmisqlContainsConditions::make();
+        $enhancedConditions->withAliasResolver($this->aliasResolver);
 
-        return new CmisqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));
+        return new CmisqlConditionsBuilder($this->aliasResolver, $enhancedConditions, $this->getExpressionVisitor($type));
     }
 
     /**
@@ -78,6 +106,6 @@ class CmisqlFactory implements FactoryInterface
      */
     public function getBuilder(string $visitorType = ''): QueryBuilderInterface
     {
-        return new CmisqlQueryBuilder($this->getConditionsBuilder($visitorType));
+        return new CmisqlQueryBuilder($this->getConditionsBuilder($visitorType), $this->aliasResolver);
     }
 }

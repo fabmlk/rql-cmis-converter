@@ -18,10 +18,16 @@ use Tms\Rql\ParserExtension\SqlQuery as RqlQuery;
 interface QueryBuilderInterface
 {
     /**
-     * @param RqlQuery $query
-     * @param string   $table
+     * @const string
+     */
+    public const DEFAULT_ROOT_ALIAS = 'o';
+
+    /**
+     * @param RqlQuery        $query
+     * @param string|string[] $tables
+     * @param array           $joinConditions [<join type> => 'join condition']
      *
      * @return QueryInterface
      */
-    public function build(RqlQuery $query, string $table): QueryInterface;
+    public function build(RqlQuery $query, $tables, array $joinConditions = []): QueryInterface;
 }

@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace Tms\Rql\Builder;
 
+use Latitude\QueryBuilder\Conditions;
 use Latitude\QueryBuilder\Expression as e;
 use Latitude\QueryBuilder\SelectQuery;
+use Tms\Rql\Factory\AliasResolverWrapper;
 use Tms\Rql\ParserExtension\Node\GroupbyNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\AggregateNode;
 use Tms\Rql\Query\QueryInterface;
@@ -40,23 +42,60 @@ class SqlQueryBuilder implements QueryBuilderInterface
     protected $conditionsBuilder;
 
     /**
+     * @var AliasResolverWrapper
+     */
+    protected $aliasResolver;
+
+
+    /**
      * SqlQueryBuilder constructor.
      *
      * @param SqlConditionsBuilder $conditionsBuilder
+     * @param AliasResolverWrapper $aliasResolverWrapper
      */
-    public function __construct(SqlConditionsBuilder $conditionsBuilder)
+    public function __construct(SqlConditionsBuilder $conditionsBuilder, AliasResolverWrapper $aliasResolverWrapper)
     {
-        $this->selectQuery = SelectQuery::make();
         $this->conditionsBuilder = $conditionsBuilder;
+        $this->aliasResolver = $aliasResolverWrapper;
+        $this->selectQuery = SelectQuery::make();
     }
 
     /**
      * {@inheritdoc}
+     *
+     * Example:
+     *     build($tree, ['foo AS f', 'bar AS b', 'baz AS z']);
+     *        => FROM foo AS f, bar AS b, baz AS z
+     *     build($tree, ['foo AS f', 'bar AS b', 'baz AS z'], [['', 'f.id = b.id'], ['inner', 'b.id = z.id']]);
+     *        => FROM foo AS f JOIN bar AS b ON f.id = b.id INNER JOIN baz AS z ON b.id = z.id
      */
-    public function build(RqlQuery $query, string $table): QueryInterface
+    public function build(RqlQuery $query, $tables, array $joinConditions = []): QueryInterface
     {
+        $tables = (array) $tables;
+
+        // our job is to generate valid SQL by default, so if user
+        // didn't specify aliases, we create them for her, starting from DEFAULT_ROOT_ALIAS
+        foreach ($tables as $i => $table) {
+            if (false === strpos(trim($table), ' ')) {
+                $tables[$i] .= ' AS '.chr(ord(self::DEFAULT_ROOT_ALIAS) + $i);
+            }
+        }
+
+        $firstTable = array_shift($tables);
+
+        // set default alias
+        $firstTableParts = explode(' ', $firstTable);
+        $this->aliasResolver->withAlias(end($firstTableParts));
+
         $this->process($query);
-        $this->selectQuery->from($table);
+
+        foreach ($joinConditions as [$type, $joinCondition]) {
+            $joinMethod = \strtolower($type).'Join';
+            $this->selectQuery->$joinMethod(array_shift($tables), Conditions::make($joinCondition));
+        }
+
+        array_unshift($tables, $firstTable);
+        $this->selectQuery->from(...$tables);
 
         return $this->getQuery();
     }
@@ -96,12 +135,15 @@ class SqlQueryBuilder implements QueryBuilderInterface
 
         /** @var SelectNode $node */
         $node = $this->notify($node);
+        $aliases = (array) ($this->aliasResolver)($node);
 
-        foreach ($node->getFields() as $field) {
+        foreach ($node->getFields() as $i => $field) {
+            $alias = $aliases[$i] ?? $aliases[0];
+
             if ($field instanceof AggregateNode) {
-                $fields[] = e::make(\strtoupper($field->getFunction()).'(%s)', $field->getField());
+                $fields[] = e::make(\strtoupper($field->getFunction()).'(%s.%s)', $alias, $field->getField());
             } else {
-                $fields[] = $field;
+                $fields[] = "$alias.$field";
             }
         }
         $this->selectQuery = $this->selectQuery::make(...$fields);
@@ -133,11 +175,15 @@ class SqlQueryBuilder implements QueryBuilderInterface
     {
         /** @var SortNode $node */
         $node = $this->notify($node);
+        $aliases = (array) ($this->aliasResolver)($node);
 
-        // Convert ['a' => 1, 'b' => -1] to [['a', 'ASC'], ['b', 'DESC']]
+        // Convert ['a' => 1, 'b' => -1] to [['o.a', 'ASC'], ['o.b', 'DESC']]
         $out = [];
+        $i = 0;
         foreach ($node->getFields() as $field => $direction) {
-            $out[] = [$field, $direction > 0 ? 'ASC' : 'DESC'];
+            $alias = $aliases[$i] ?? $aliases[0];
+            $out[] = ["$alias.$field", $direction > 0 ? 'ASC' : 'DESC'];
+            $i++;
         }
 
         $this->selectQuery->orderBy(...$out);
@@ -168,7 +214,15 @@ class SqlQueryBuilder implements QueryBuilderInterface
     {
         /** @var GroupbyNode $node */
         $node = $this->notify($node);
-        $this->selectQuery->groupBy(...$node->getFields());
+        $aliases = (array) ($this->aliasResolver)($node);
+
+        $columns = [];
+        foreach ($node->getFields() as $i => $field) {
+            $alias = $aliases[$i] ?? $aliases[0];
+            $columns[] = "$alias.$field";
+        }
+
+        $this->selectQuery->groupBy(...$columns);
     }
 
     /**

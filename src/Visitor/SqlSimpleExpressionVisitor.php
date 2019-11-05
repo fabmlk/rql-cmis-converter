@@ -29,6 +29,21 @@ use Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode;
 class SqlSimpleExpressionVisitor
 {
     /**
+     * @var callable
+     */
+    protected $aliasResolver;
+
+    /**
+     * SqlSimpleExpressionVisitor constructor.
+     *
+     * @param callable $aliasResolver
+     */
+    public function __construct(callable $aliasResolver)
+    {
+        $this->aliasResolver = $aliasResolver;
+    }
+    
+    /**
      * @param AbstractComparisonOperatorNode $node
      *
      * @return array
@@ -39,47 +54,57 @@ class SqlSimpleExpressionVisitor
     {
         switch (true) {
             case $node instanceof NeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s <> %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s <> %s', $alias, $node->getField(), $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof LtNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s < %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s < %s', $alias, $node->getField(), $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof GtNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s > %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s > %s', $alias, $node->getField(), $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof GeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s >= %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s >= %s', $alias, $node->getField(), $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof LeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s <= %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s <= %s', $alias, $node->getField(), $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof InNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s IN %s', $node->getField(), $this->encodeValue($node->getValues())),
+                    sprintf('%s.%s IN %s', $alias, $node->getField(), $this->encodeValue($node->getValues())),
                 ];
             case $node instanceof OutNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s NOT IN %s', $node->getField(), $this->encodeValue($node->getValues())),
+                    sprintf('%s.%s NOT IN %s', $alias, $node->getField(), $this->encodeValue($node->getValues())),
                 ];
             case $node instanceof LikeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s LIKE %s', $node->getField(), $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s LIKE %s', $alias, $node->getField(), $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof BetweenNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s BETWEEN %s AND %s', $node->getField(), $node->getFrom(), $node->getTo()),
+                    sprintf('%s.%s BETWEEN %s AND %s', $alias, $node->getField(), $node->getFrom(), $node->getTo()),
                 ];
             case $node instanceof EqNode:
+                $alias = ($this->aliasResolver)($node);
                 $encodedValue = $this->encodeValue($node->getValue());
                 $operator = 'NULL' === $encodedValue ? 'IS' : '=';
 
                 return [
-                    sprintf('%s %s %s', $node->getField(), $operator, $encodedValue),
+                    sprintf('%s.%s %s %s', $alias, $node->getField(), $operator, $encodedValue),
                 ];
             default:
                 throw new \DomainException(sprintf('Unknown node %s', get_class($node)));

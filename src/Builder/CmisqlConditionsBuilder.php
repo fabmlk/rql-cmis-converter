@@ -52,6 +52,6 @@ class CmisqlConditionsBuilder extends SqlConditionsBuilder
      */
     protected function getDefaultExpressionVisitor(): callable
     {
-        return new CmisqlSimpleExpressionVisitor();
+        return new CmisqlSimpleExpressionVisitor($this->aliasResolver);
     }
 }

@@ -20,6 +20,6 @@ $builder = $factory->getBuilder(CmisqlFactory::TYPE_SIMPLE);
 $builder->onVisitExpression(new EchoVisitor());
 
 $tree = $parser->parse($tokens);
-$query = $builder->build($tree, 'cmis:document');
+$query = $builder->build($tree, ['cmis:document AS d', 'cmis:folder AS f'], ['inner' => 'd.cmis:objectId = f.cmis:objectId']);
 
 echo SqlFormatter::format($query->sql());

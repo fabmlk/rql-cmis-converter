@@ -34,18 +34,21 @@ class CmisqlParamsExpressionVisitor extends SqlParamsExpressionVisitor
     {
         switch (true) {
             case $node instanceof EqAnyNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('? = ANY %s', $node->getField()),
+                    sprintf('? = ANY %s.%s', $alias, $node->getField()),
                     $this->encodeValue($node->getValue()),
                 ];
             case $node instanceof InAnyNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('ANY %s IN ?', $node->getField()),
+                    sprintf('ANY %s.%s IN ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValues()),
                 ];
             case $node instanceof OutAnyNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('ANY %s NOT IN ?', $node->getField()),
+                    sprintf('ANY %s.%s NOT IN ?', $alias, $node->getField()),
                     $this->encodeValue($node->getValues()),
                 ];
             case $node instanceof ColNode:
@@ -64,13 +67,15 @@ class CmisqlParamsExpressionVisitor extends SqlParamsExpressionVisitor
                     sprintf('"%s"', $node->getValue())
                 ];
             case $node instanceof InTreeNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    'IN_TREE(?)',
+                    sprintf('IN_TREE(%s,?)', $alias),
                     $this->encodeValue($node->getValue())
                 ];
             case $node instanceof InFolderNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    'IN_FOLDER(?)',
+                    sprintf('IN_FOLDER(%s,?)', $alias),
                     $this->encodeValue($node->getValue())
                 ];
             default:

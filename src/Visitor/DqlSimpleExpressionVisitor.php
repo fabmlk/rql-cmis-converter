@@ -33,18 +33,18 @@ use Xiag\Rql\Parser\Node\Query\ScalarOperator\NeNode;
 class DqlSimpleExpressionVisitor
 {
     /**
-     * @var string
+     * @var callable
      */
-    private $rootAlias;
+    private $aliasResolver;
 
     /**
      * DqlSimpleExpressionVisitor constructor.
      *
-     * @param string $rootAlias
+     * @param callable $aliasResolver
      */
-    public function __construct(string $rootAlias)
+    public function __construct(callable $aliasResolver)
     {
-        $this->rootAlias = $rootAlias;
+        $this->aliasResolver = $aliasResolver;
     }
 
     /**
@@ -58,105 +58,116 @@ class DqlSimpleExpressionVisitor
     {
         switch (true) {
             case $node instanceof NeNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) <> %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
+                        sprintf('%s(%s.%s) <> %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValue()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s <> %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s <> %s', $alias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof LtNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) < %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
+                        sprintf('%s(%s.%s) < %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValue()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s < %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s < %s', $alias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof GtNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) > %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
+                        sprintf('%s(%s.%s) > %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValue()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s > %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s > %s', $alias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof GeNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) >= %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
+                        sprintf('%s(%s.%s) >= %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValue()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s >= %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s >= %s', $alias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof LeNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) <= %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
+                        sprintf('%s(%s.%s) <= %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValue()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s <= %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s <= %s', $alias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof InNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) IN %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValues()))
+                        sprintf('%s(%s.%s) IN %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValues()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s IN %s', $this->rootAlias, $field, $this->encodeValue($node->getValues())),
+                    sprintf('%s.%s IN %s', $alias, $field, $this->encodeValue($node->getValues())),
                 ];
             case $node instanceof OutNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) NOT IN %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValues()))
+                        sprintf('%s(%s.%s) NOT IN %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValues()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s NOT IN %s', $this->rootAlias, $field, $this->encodeValue($node->getValues())),
+                    sprintf('%s.%s NOT IN %s', $alias, $field, $this->encodeValue($node->getValues())),
                 ];
             case $node instanceof LikeNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) LIKE %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $this->encodeValue($node->getValue()))
+                        sprintf('%s(%s.%s) LIKE %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $this->encodeValue($node->getValue()))
                     ];
                 }
                 return [
-                    sprintf('%s.%s LIKE %s', $this->rootAlias, $field, $this->encodeValue($node->getValue())),
+                    sprintf('%s.%s LIKE %s', $alias, $field, $this->encodeValue($node->getValue())),
                 ];
             case $node instanceof BetweenNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('%s.%s BETWEEN %s AND %s', $this->rootAlias, $field, $node->getFrom(), $node->getTo()),
+                    sprintf('%s.%s BETWEEN %s AND %s', $alias, $node->getField(), $node->getFrom(), $node->getTo()),
                 ];
             case $node instanceof EqNode:
+                $alias = ($this->aliasResolver)($node);
                 $field = $node->getField();
                 $encodedValue = $this->encodeValue($node->getValue());
                 $operator = 'NULL' === $encodedValue ? 'IS' : '=';
 
                 if ($field instanceof AggregateWithValueNode) {
                     return [
-                        sprintf('%s(%s.%s) %s %s', \strtoupper($field->getFunction()), $this->rootAlias, $field->getField(), $operator, $encodedValue)
+                        sprintf('%s(%s.%s) %s %s', \strtoupper($field->getFunction()), $alias, $field->getField(), $operator, $encodedValue)
                     ];
                 }
                 return [
-                    sprintf('%s.%s %s %s', $this->rootAlias, $field, $operator, $encodedValue),
+                    sprintf('%s.%s %s %s', $alias, $field, $operator, $encodedValue),
                 ];
             case $node instanceof AtDepthNode:
+                $alias = ($this->aliasResolver)($node);
                 return [
-                    sprintf('AT_DEPTH(%s,%d)', $this->encodeValue($node->getLeftValue()), $this->encodeValue($node->getRightValue()))
+                    sprintf('AT_DEPTH(%s,%s,%d)', $alias, $this->encodeValue($node->getLeftValue()), $this->encodeValue($node->getRightValue()))
                 ];
             default:
                 throw new \DomainException(sprintf('Unknown node %s', get_class($node)));

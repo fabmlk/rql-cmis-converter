@@ -26,35 +26,6 @@ use Tms\Rql\ParserExtension\SqlQuery as RqlQuery;
 class DqlQueryBuilder extends SqlQueryBuilder
 {
     /**
-     * @var string
-     */
-    private $rootAlias;
-
-    /**
-     * SqlQueryBuilder constructor.
-     *
-     * @param SqlConditionsBuilder $conditionsBuilder
-     * @param string               $rootAlias the entity alias involved in the construction of the query
-     */
-    public function __construct(SqlConditionsBuilder $conditionsBuilder, string $rootAlias)
-    {
-        parent::__construct($conditionsBuilder);
-        $this->selectQuery = SelectQuery::make($rootAlias);
-        $this->rootAlias = $rootAlias;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function build(RqlQuery $query, string $entity): QueryInterface
-    {
-        $this->process($query);
-        $this->selectQuery->from($entity.' AS '.$this->rootAlias);
-
-        return $this->getQuery();
-    }
-
-    /**
      * Process select node.
      *
      * @param SelectNode|AbstractNode $node
@@ -65,50 +36,22 @@ class DqlQueryBuilder extends SqlQueryBuilder
 
         /** @var SelectNode $node */
         $node = $this->notify($node);
+        $aliases = (array) ($this->aliasResolver)($node);
 
-        foreach ($node->getFields() as $field) {
+        foreach ($node->getFields() as $i => $field) {
+            $alias = $aliases[$i] ?? $aliases[0];
+
             if ($field instanceof AggregateWithValueNode) {
                 if ($field->getValue()) {
-                    $fields[] = e::make(\strtoupper($field->getFunction()).'(%s,%s)', $this->wrapWithRootAlias($field->getField()), $field->getValue());
+                    $fields[] = e::make(\strtoupper($field->getFunction()).'(%s.%s,%s)', $alias, $field->getField(), $field->getValue());
                 } else {
-                    $fields[] = e::make(\strtoupper($field->getFunction()).'(%s)', $this->wrapWithRootAlias($field->getField()));
+                    $fields[] = e::make(\strtoupper($field->getFunction()).'(%s.%s)', $alias, $field->getField());
                 }
             } else {
-                $fields[] = $this->wrapWithRootAlias($field);
+                $fields[] = "$alias.$field";
             }
         }
         $this->selectQuery = $this->selectQuery::make(...$fields);
-    }
-
-    /**
-     * Process sort node.
-     *
-     * @param SortNode|AbstractNode $node
-     */
-    protected function processSortNode(SortNode $node): void
-    {
-        /** @var SortNode $node */
-        $node = $this->notify($node);
-
-        // Convert ['a' => 1, 'b' => -1] to [['o.a', 'ASC'], ['o.b', 'DESC']]
-        $out = [];
-        foreach ($node->getFields() as $field => $direction) {
-            $out[] = [$this->wrapWithRootAlias($field), $direction > 0 ? 'ASC' : 'DESC'];
-        }
-
-        $this->selectQuery->orderBy(...$out);
-    }
-
-    /**
-     * Process group by node.
-     *
-     * @param GroupbyNode|AbstractNode $node
-     */
-    protected function processGroupbyNode(GroupbyNode $node): void
-    {
-        /** @var GroupbyNode $node */
-        $node = $this->notify($node);
-        $this->selectQuery->groupBy(...array_map([$this, 'wrapWithRootAlias'], $node->getFields()));
     }
 
     /**
@@ -117,15 +60,5 @@ class DqlQueryBuilder extends SqlQueryBuilder
     protected function getQuery(): QueryInterface
     {
         return new DqlQuery($this->selectQuery);
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return string
-     */
-    private function wrapWithRootAlias(string $field): string
-    {
-        return $this->rootAlias.'.'.$field;
     }
 }

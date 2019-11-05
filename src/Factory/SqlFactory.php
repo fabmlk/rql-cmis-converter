@@ -36,16 +36,43 @@ class SqlFactory implements FactoryInterface
     public const TYPE_SIMPLE = 'simple';
 
     /**
+     * @var callable|null
+     */
+    private $aliasResolver;
+
+    /**
+     * SqlFactory constructor.
+     *
+     * @param callable|null $aliasResolver a callable that returns the alias
+     */
+    public function __construct($aliasResolver = null)
+    {
+        if (!$aliasResolver) {
+            $aliasResolver = static function ($node, $alias) { return $alias; };
+        }
+
+         $this->setAliasResolver($aliasResolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAliasResolver(callable $aliasResolver): void
+    {
+        $this->aliasResolver = new AliasResolverWrapper($aliasResolver);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getExpressionVisitor(string $type = ''): callable
     {
         switch ($type) {
             case self::TYPE_PARAMS:
-                return new SqlParamsExpressionVisitor();
+                return new SqlParamsExpressionVisitor($this->aliasResolver);
             case self::TYPE_SIMPLE:
             case '':
-                return new SqlSimpleExpressionVisitor();
+                return new SqlSimpleExpressionVisitor($this->aliasResolver);
             default:
                 throw new \InvalidArgumentException(sprintf('Unkown visitor type %s', $type));
         }
@@ -68,8 +95,9 @@ class SqlFactory implements FactoryInterface
     {
         /** @var AbstractEnhanceableConditions $enhancedConditions */
         $enhancedConditions = SqlNotConditions::make();
+        $enhancedConditions->withAliasResolver($this->aliasResolver);
 
-        return new SqlConditionsBuilder($enhancedConditions, $this->getExpressionVisitor($type));
+        return new SqlConditionsBuilder($this->aliasResolver, $enhancedConditions, $this->getExpressionVisitor($type));
     }
 
     /**
@@ -77,6 +105,6 @@ class SqlFactory implements FactoryInterface
      */
     public function getBuilder(string $visitorType = ''): QueryBuilderInterface
     {
-        return new SqlQueryBuilder($this->getConditionsBuilder($visitorType));
+        return new SqlQueryBuilder($this->getConditionsBuilder($visitorType), $this->aliasResolver);
     }
 }

@@ -25,6 +25,11 @@ interface FactoryInterface
     public function getExpressionVisitor(string $type = ''): callable;
 
     /**
+     * @param callable $aliasResolver
+     */
+    public function setAliasResolver(callable $aliasResolver): void;
+
+    /**
      * @return Parser
      */
     public function getParser(): Parser;

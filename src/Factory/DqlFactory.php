@@ -37,25 +37,30 @@ class DqlFactory implements FactoryInterface
     public const TYPE_SIMPLE = 'simple';
 
     /**
-     * @const string
+     * @var callable|null
      */
-    public const DEFAULT_ROOT_ALIAS = 'o';
-
-    /**
-     * The entity alias involved in the construction of the query
-     *
-     * @var string $rootAlias
-     */
-    private $rootAlias;
+    private $aliasResolver;
 
     /**
      * DqlFactory constructor.
      *
-     * @param string $rootAlias
+     * @param callable|null $aliasResolver a callable that returns the alias
      */
-    public function __construct(string $rootAlias = self::DEFAULT_ROOT_ALIAS)
+    public function __construct($aliasResolver = null)
     {
-       $this->rootAlias = $rootAlias;
+        if (!$aliasResolver) {
+            $aliasResolver = static function ($node, $alias) { return $alias; };
+        }
+
+        $this->setAliasResolver($aliasResolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAliasResolver(callable $aliasResolver): void
+    {
+        $this->aliasResolver = new AliasResolverWrapper($aliasResolver);
     }
 
     /**
@@ -65,10 +70,10 @@ class DqlFactory implements FactoryInterface
     {
         switch ($type) {
             case self::TYPE_PARAMS:
-                return new DqlParamsExpressionVisitor($this->rootAlias);
+                return new DqlParamsExpressionVisitor($this->aliasResolver);
             case self::TYPE_SIMPLE:
             case '':
-                return new DqlSimpleExpressionVisitor($this->rootAlias);
+                return new DqlSimpleExpressionVisitor($this->aliasResolver);
             default:
                 throw new \InvalidArgumentException(sprintf('Unkown visitor type %s', $type));
         }
@@ -91,8 +96,9 @@ class DqlFactory implements FactoryInterface
     {
         /** @var AbstractEnhanceableConditions $enhancedConditions */
         $enhancedConditions = SqlNotConditions::make();
+        $enhancedConditions->withAliasResolver($this->aliasResolver);
 
-        return new DqlConditionsBuilder($this->rootAlias, $enhancedConditions, $this->getExpressionVisitor($type));
+        return new DqlConditionsBuilder($this->aliasResolver, $enhancedConditions, $this->getExpressionVisitor($type));
     }
 
     /**
@@ -100,6 +106,6 @@ class DqlFactory implements FactoryInterface
      */
     public function getBuilder(string $visitorType = ''): QueryBuilderInterface
     {
-        return new DqlQueryBuilder($this->getConditionsBuilder($visitorType), $this->rootAlias);
+        return new DqlQueryBuilder($this->getConditionsBuilder($visitorType), $this->aliasResolver);
     }
 }

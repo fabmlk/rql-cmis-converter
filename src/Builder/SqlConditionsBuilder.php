@@ -36,13 +36,20 @@ class SqlConditionsBuilder implements ConditionsBuilderInterface
     protected $expressionVisitor;
 
     /**
+     * @var callable
+     */
+    protected $aliasResolver;
+
+    /**
      * SqlConditionsBuilder constructor.
      *
+     * @param callable                      $aliasResolver
      * @param AbstractEnhanceableConditions $conditions
      * @param callable                      $expressionVisitor
      */
-    public function __construct(AbstractEnhanceableConditions $conditions, callable $expressionVisitor = null)
+    public function __construct(callable $aliasResolver, AbstractEnhanceableConditions $conditions, callable $expressionVisitor = null)
     {
+        $this->aliasResolver = $aliasResolver;
         $this->conditions = $conditions;
         $this->expressionVisitor = $expressionVisitor ?: $this->getDefaultExpressionVisitor();
         $this->listeners = new \SplObjectStorage();
@@ -243,6 +250,6 @@ class SqlConditionsBuilder implements ConditionsBuilderInterface
      */
     protected function getDefaultExpressionVisitor(): callable
     {
-        return new SqlSimpleExpressionVisitor();
+        return new SqlSimpleExpressionVisitor($this->aliasResolver);
     }
 }

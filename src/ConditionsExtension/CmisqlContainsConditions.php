@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Tms\Rql\ConditionsExtension;
 
 use Latitude\QueryBuilder\Conditions;
+use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\ContainsNode;
 
 /**
  * Class CmisqlContainsConditions.
@@ -35,6 +36,11 @@ class CmisqlContainsConditions extends SqlNotConditions
     protected function enhanceCondition(array $part): string
     {
         if (self::GROUP_NAME === $part['type']) {
+            if (is_callable($this->aliasResolver)) {
+                $alias = ($this->aliasResolver)(new ContainsNode());
+                return sprintf("%s,'%s'", $alias, parent::enhanceCondition($part));
+            }
+
             return sprintf("'%s'", parent::enhanceCondition($part));
         }
 
