@@ -162,7 +162,7 @@ class SqlParamsExpressionVisitor
             return var_export($value->toLike(), true);
         }
         if ($value instanceof \DateTimeInterface) {
-            return $value->format('Y-m-d H:i:s');
+            return var_export($value->format('Y-m-d H:i:s'), true);
         }
 
         throw new \LogicException(sprintf('Invalid value "%s"', var_export($value, true)));

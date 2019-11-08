@@ -16,9 +16,9 @@ use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InFolderNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\InTreeNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NceNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Cmisql\NclNode;
+use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\EqAnyNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\InAnyNode;
 use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\OutAnyNode;
-use Tms\Rql\ParserExtension\Node\Query\ScalarOperator\Cmisql\EqAnyNode;
 use Xiag\Rql\Parser\Glob;
 use Xiag\Rql\Parser\Node\AbstractQueryNode;
 
@@ -93,5 +93,18 @@ class CmisqlSimpleExpressionVisitor extends SqlSimpleExpressionVisitor
         }
 
         throw new \LogicException(sprintf('Invalid value "%s"', var_export($value, true)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function encodeValue($value): string
+    {
+        if ($value instanceof \DateTime) {
+            // from CMIS standard http://docs.oasis-open.org/cmis/CMIS/v1.1/CMIS-v1.1.html#x1-1110001
+            return 'TIMESTAMP '.var_export($value->format(\DateTime::RFC3339_EXTENDED), true);
+        }
+
+        return parent::encodeValue($value);
     }
 }

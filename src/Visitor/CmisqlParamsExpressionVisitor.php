@@ -100,4 +100,17 @@ class CmisqlParamsExpressionVisitor extends SqlParamsExpressionVisitor
 
         throw new \LogicException(sprintf('Invalid value "%s"', var_export($value, true)));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function encodeValue($value): string
+    {
+        if ($value instanceof \DateTime) {
+            // from CMIS standard http://docs.oasis-open.org/cmis/CMIS/v1.1/CMIS-v1.1.html#x1-1110001
+            return 'TIMESTAMP '.var_export($value->format(\DateTime::RFC3339_EXTENDED), true);
+        }
+
+        return parent::encodeValue($value);
+    }
 }
