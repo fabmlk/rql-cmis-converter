@@ -39,7 +39,7 @@ class CmisqlParser extends BaseParser
             ->registerTypeCaster('boolean', new TypeCaster\BooleanTypeCaster());
         $arrayParser = new ValueParser\ArrayParser($scalarParser);
         $globParser = new ValueParser\GlobParser();
-        $fieldParser = new ValueParser\FieldParser();
+        $fieldParser = new ExtensionValueParser\Cmisql\FieldParser();
         $integerParser = new ValueParser\IntegerParser();
 
         $fieldAggregateParser = new ExtensionValueParser\FieldAggregateParser($fieldParser);
