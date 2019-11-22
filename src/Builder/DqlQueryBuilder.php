@@ -11,6 +11,7 @@ namespace Tms\Rql\Builder;
 
 use Latitude\QueryBuilder\Expression as e;
 use Latitude\QueryBuilder\SelectQuery;
+use Tms\Rql\Factory\AliasResolverWrapper;
 use Tms\Rql\ParserExtension\Node\GroupbyNode;
 use Tms\Rql\ParserExtension\Node\Query\FunctionOperator\Dql\AggregateWithValueNode;
 use Tms\Rql\Query\DqlQuery;
@@ -26,7 +27,18 @@ use Tms\Rql\ParserExtension\SqlQuery as RqlQuery;
 class DqlQueryBuilder extends SqlQueryBuilder
 {
     /**
-     * Process select node.
+     * {@inheritdoc}
+     */
+    protected function process(RqlQuery $query): void
+    {
+        if (null === $query->getSelect()) {
+            $this->selectQuery = $this->selectQuery::make($this->aliasResolver->getDefaultAlias());
+        }
+        parent::process($query);
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @param SelectNode|AbstractNode $node
      */
@@ -51,6 +63,7 @@ class DqlQueryBuilder extends SqlQueryBuilder
                 $fields[] = "$alias.$field";
             }
         }
+
         $this->selectQuery = $this->selectQuery::make(...$fields);
     }
 

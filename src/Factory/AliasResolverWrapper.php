@@ -37,7 +37,7 @@ class AliasResolverWrapper
     }
 
     /**
-     * Utilisé par SqlQueryBuilder après avoir identifié le default alias
+     * Used by SqlQueryBuilder after having identified the default alias
      *
      * @param string $alias
      *
@@ -48,6 +48,16 @@ class AliasResolverWrapper
         $this->defaultAlias = $alias;
 
         return $this;
+    }
+
+    /**
+     * Used for instance by DqlQueryBuilder
+     *
+     * @return string
+     */
+    public function getDefaultAlias(): string
+    {
+        return $this->defaultAlias;
     }
 
     /**
